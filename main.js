@@ -6672,48 +6672,54 @@ var $author$project$Main$renderSquares = F2(
 							squares)))
 				]));
 	});
-var $author$project$Main$renderBody = function (_v0) {
+var $author$project$Main$render = function (_v0) {
 	var state = _v0.l;
 	var events = _v0.i;
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				function () {
-				var _v1 = _Utils_Tuple2(state.q, state.J);
-				switch (_v1.a.$) {
-					case 2:
-						var squares = _v1.a.a;
-						return A2($author$project$Main$renderSquares, squares, '😎');
-					case 3:
-						var squares = _v1.a.a;
-						return A2($author$project$Main$renderSquares, squares, '😵');
-					case 1:
-						if (_v1.b) {
-							var squares = _v1.a.a;
-							return A2($author$project$Main$renderSquares, squares, '😮');
-						} else {
-							var squares = _v1.a.a;
-							return A2($author$project$Main$renderSquares, squares, '🙂');
-						}
-					default:
-						return A2($elm$html$Html$span, _List_Nil, _List_Nil);
+	var _v1 = function () {
+		var _v2 = _Utils_Tuple2(state.q, state.J);
+		switch (_v2.a.$) {
+			case 2:
+				var squares = _v2.a.a;
+				return _Utils_Tuple2('😎', squares);
+			case 3:
+				var squares = _v2.a.a;
+				return _Utils_Tuple2('😵', squares);
+			case 1:
+				if (_v2.b) {
+					var squares = _v2.a.a;
+					return _Utils_Tuple2('😮', squares);
+				} else {
+					var squares = _v2.a.a;
+					return _Utils_Tuple2('🙂', squares);
 				}
-			}(),
-				A2(
-				$author$project$Main$renderSlider,
-				state.s,
-				$elm$core$List$length(events))
-			]));
+			default:
+				return _Utils_Tuple2('', _List_Nil);
+		}
+	}();
+	var emoji = _v1.a;
+	var squares_ = _v1.b;
+	return _Utils_Tuple2(
+		emoji,
+		A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2($author$project$Main$renderSquares, squares_, emoji),
+					A2(
+					$author$project$Main$renderSlider,
+					state.s,
+					$elm$core$List$length(events))
+				])));
 };
 var $author$project$Main$view = function (model) {
+	var _v0 = $author$project$Main$render(model);
+	var emoji = _v0.a;
+	var body = _v0.b;
 	return {
 		av: _List_fromArray(
-			[
-				$author$project$Main$renderBody(model)
-			]),
-		aJ: 'Minesweeper'
+			[body]),
+		aJ: 'Minesweeper — ' + emoji
 	};
 };
 var $author$project$Main$main = $elm$browser$Browser$document(
