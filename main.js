@@ -5573,33 +5573,25 @@ var $author$project$Grid$relationship = F2(
 		return 2;
 	});
 var $author$project$Grid$map = F4(
-	function (fn1, fn2, fn3, c) {
+	function (fn1, fn2, fn3, c1) {
 		return $elm$core$List$indexedMap(
 			A2(
 				$elm$core$Basics$composeL,
 				$elm$core$List$indexedMap,
 				F3(
 					function (i, j, x) {
-						var _v0 = A2(
-							$author$project$Grid$relationship,
-							c,
-							_Utils_Tuple2(i, j));
+						var c2 = _Utils_Tuple2(i, j);
+						var _v0 = A2($author$project$Grid$relationship, c1, c2);
 						switch (_v0) {
 							case 0:
 								return fn1(
-									_Utils_Tuple2(
-										_Utils_Tuple2(i, j),
-										x));
+									_Utils_Tuple2(c2, x));
 							case 1:
 								return fn2(
-									_Utils_Tuple2(
-										_Utils_Tuple2(i, j),
-										x));
+									_Utils_Tuple2(c2, x));
 							default:
 								return fn3(
-									_Utils_Tuple2(
-										_Utils_Tuple2(i, j),
-										x));
+									_Utils_Tuple2(c2, x));
 						}
 					})));
 	});
