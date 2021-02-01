@@ -5399,8 +5399,8 @@ var $author$project$Main$Pending = function (a) {
 var $author$project$Main$Safe = function (a) {
 	return {$: 0, a: a};
 };
-var $elm$core$Basics$always = F2(
-	function (a, _v0) {
+var $author$project$Grid$always = F3(
+	function (a, _v0, _v1) {
 		return a;
 	});
 var $author$project$Main$Exposed = function (a) {
@@ -5521,20 +5521,19 @@ var $author$project$Main$Fire = F2(
 	function (a, b) {
 		return {$: 0, a: a, b: b};
 	});
-var $author$project$Main$fire = function (_v0) {
-	var coord = _v0.a;
-	var square = _v0.b;
-	if (!square.$) {
-		return $elm$core$Maybe$Just(
-			A2($author$project$Main$Fire, coord, square));
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$Grid$identity = function (_v0) {
-	var x = _v0.b;
-	return x;
-};
+var $author$project$Main$fire = F2(
+	function (coord, square) {
+		if (!square.$) {
+			return $elm$core$Maybe$Just(
+				A2($author$project$Main$Fire, coord, square));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Grid$identity = F2(
+	function (_v0, x) {
+		return x;
+	});
 var $author$project$Grid$Identity = 0;
 var $author$project$Grid$Neighbor = 1;
 var $author$project$Grid$Neither = 2;
@@ -5589,21 +5588,18 @@ var $author$project$Grid$mapRelationship = F4(
 						var _v0 = A2($author$project$Grid$relationship, c1, c2);
 						switch (_v0) {
 							case 0:
-								return fn1(
-									_Utils_Tuple2(c2, x));
+								return A2(fn1, c2, x);
 							case 1:
-								return fn2(
-									_Utils_Tuple2(c2, x));
+								return A2(fn2, c2, x);
 							default:
-								return fn3(
-									_Utils_Tuple2(c2, x));
+								return A2(fn3, c2, x);
 						}
 					})));
 	});
 var $author$project$Grid$mapIdentityRelationship = function (x) {
 	return A3(
 		$author$project$Grid$mapRelationship,
-		$elm$core$Basics$always(x),
+		$author$project$Grid$always(x),
 		$author$project$Grid$identity,
 		$author$project$Grid$identity);
 };
@@ -5636,9 +5632,9 @@ var $author$project$Main$apply = F2(
 										$elm$core$List$concat(
 											A5(
 												$author$project$Grid$mapRelationship,
-												$elm$core$Basics$always($elm$core$Maybe$Nothing),
+												$author$project$Grid$always($elm$core$Maybe$Nothing),
 												$author$project$Main$fire,
-												$elm$core$Basics$always($elm$core$Maybe$Nothing),
+												$author$project$Grid$always($elm$core$Maybe$Nothing),
 												coord,
 												grid))));
 							} else {
@@ -5702,15 +5698,15 @@ var $author$project$Main$apply = F2(
 		}
 		return state;
 	});
-var $author$project$Main$increment = function (_v0) {
-	var value = _v0.b;
-	if (!value.$) {
-		var v = value.a;
-		return $author$project$Main$Safe(v + 1);
-	} else {
-		return value;
-	}
-};
+var $author$project$Main$increment = F2(
+	function (_v0, value) {
+		if (!value.$) {
+			var v = value.a;
+			return $author$project$Main$Safe(v + 1);
+		} else {
+			return value;
+		}
+	});
 var $elm$core$Dict$Black = 1;
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -6073,7 +6069,7 @@ var $author$project$Main$update = F2(
 										$elm$core$List$foldl,
 										A3(
 											$author$project$Grid$mapRelationship,
-											$elm$core$Basics$always($author$project$Main$Mine),
+											$author$project$Grid$always($author$project$Main$Mine),
 											$author$project$Main$increment,
 											$author$project$Grid$identity),
 										A3(
