@@ -5399,9 +5399,9 @@ var $author$project$Main$Pending = function (a) {
 var $author$project$Main$Safe = function (a) {
 	return {$: 0, a: a};
 };
-var $author$project$Grid$always = F3(
-	function (x, _v0, _v1) {
-		return x;
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
 	});
 var $author$project$Main$Exposed = function (a) {
 	return {$: 2, a: a};
@@ -5412,6 +5412,10 @@ var $author$project$Main$Failure = function (a) {
 var $author$project$Main$Marked = function (a) {
 	return {$: 1, a: a};
 };
+var $author$project$Grid$always = F3(
+	function (x, _v0, _v1) {
+		return x;
+	});
 var $author$project$Main$Success = function (a) {
 	return {$: 2, a: a};
 };
@@ -5530,21 +5534,6 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $author$project$Grid$identity = F2(
-	function (_v0, x) {
-		return x;
-	});
-var $author$project$Grid$indexedMap = function (fn) {
-	return $elm$core$List$indexedMap(
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$core$List$indexedMap,
-			F2(
-				function (i, j) {
-					return fn(
-						_Utils_Tuple2(i, j));
-				})));
-};
 var $author$project$Grid$Identity = 0;
 var $author$project$Grid$Neighbor = 1;
 var $author$project$Grid$Neither = 2;
@@ -5587,25 +5576,44 @@ var $author$project$Grid$relationship = F2(
 		}
 		return 2;
 	});
-var $author$project$Grid$mapRelationship = F4(
-	function (fn1, fn2, fn3, c1) {
-		return $author$project$Grid$indexedMap(
-			F2(
-				function (c2, x) {
-					var _v0 = A2($author$project$Grid$relationship, c1, c2);
-					switch (_v0) {
-						case 0:
-							return A2(fn1, c2, x);
-						case 1:
-							return A2(fn2, c2, x);
-						default:
-							return A2(fn3, c2, x);
-					}
-				}));
+var $author$project$Grid$indexedMap = F4(
+	function (f1, f2, f3, c) {
+		return $elm$core$List$indexedMap(
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$core$List$indexedMap,
+				F3(
+					function (i, j, x) {
+						var _v0 = A2(
+							$author$project$Grid$relationship,
+							c,
+							_Utils_Tuple2(i, j));
+						switch (_v0) {
+							case 0:
+								return A2(
+									f1,
+									_Utils_Tuple2(i, j),
+									x);
+							case 1:
+								return A2(
+									f2,
+									_Utils_Tuple2(i, j),
+									x);
+							default:
+								return A2(
+									f3,
+									_Utils_Tuple2(i, j),
+									x);
+						}
+					})));
 	});
-var $author$project$Grid$mapIdentityRelationship = function (x) {
+var $author$project$Grid$identity = F2(
+	function (_v0, x) {
+		return x;
+	});
+var $author$project$Grid$mapIdentity = function (x) {
 	return A3(
-		$author$project$Grid$mapRelationship,
+		$author$project$Grid$indexedMap,
 		$author$project$Grid$always(x),
 		$author$project$Grid$identity,
 		$author$project$Grid$identity);
@@ -5628,7 +5636,7 @@ var $author$project$Main$apply = F2(
 									$author$project$Main$apply,
 									$author$project$Main$check(
 										A3(
-											$author$project$Grid$mapIdentityRelationship,
+											$author$project$Grid$mapIdentity,
 											$author$project$Main$Exposed(
 												$author$project$Main$Safe(0)),
 											coord,
@@ -5638,7 +5646,7 @@ var $author$project$Main$apply = F2(
 										$elm$core$Basics$identity,
 										$elm$core$List$concat(
 											A5(
-												$author$project$Grid$mapRelationship,
+												$author$project$Grid$indexedMap,
 												$author$project$Grid$always($elm$core$Maybe$Nothing),
 												$author$project$Main$click,
 												$author$project$Grid$always($elm$core$Maybe$Nothing),
@@ -5651,7 +5659,7 @@ var $author$project$Main$apply = F2(
 								var value = _v4.b.a;
 								return $author$project$Main$check(
 									A3(
-										$author$project$Grid$mapIdentityRelationship,
+										$author$project$Grid$mapIdentity,
 										$author$project$Main$Exposed(value),
 										coord,
 										grid));
@@ -5663,7 +5671,7 @@ var $author$project$Main$apply = F2(
 							var _v3 = _v2.b.a;
 							return $author$project$Main$Failure(
 								A3(
-									$author$project$Grid$mapIdentityRelationship,
+									$author$project$Grid$mapIdentity,
 									$author$project$Main$Exposed($author$project$Main$Mine),
 									coord,
 									grid));
@@ -5680,7 +5688,7 @@ var $author$project$Main$apply = F2(
 							var value = _v5.b.a;
 							return $author$project$Main$Pending(
 								A3(
-									$author$project$Grid$mapIdentityRelationship,
+									$author$project$Grid$mapIdentity,
 									$author$project$Main$Marked(value),
 									coord,
 									grid));
@@ -5691,7 +5699,7 @@ var $author$project$Main$apply = F2(
 							var value = _v6.b.a;
 							return $author$project$Main$Pending(
 								A3(
-									$author$project$Grid$mapIdentityRelationship,
+									$author$project$Grid$mapIdentity,
 									$author$project$Main$Hidden(value),
 									coord,
 									grid));
@@ -5705,15 +5713,14 @@ var $author$project$Main$apply = F2(
 		}
 		return state;
 	});
-var $author$project$Main$increment = F2(
-	function (_v0, value) {
-		if (!value.$) {
-			var v = value.a;
-			return $author$project$Main$Safe(v + 1);
-		} else {
-			return value;
-		}
-	});
+var $author$project$Main$increment = function (value) {
+	if (!value.$) {
+		var v = value.a;
+		return $author$project$Main$Safe(v + 1);
+	} else {
+		return value;
+	}
+};
 var $elm$core$Dict$Black = 1;
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -5828,7 +5835,18 @@ var $elm$core$Set$insert = F2(
 		var dict = _v0;
 		return A3($elm$core$Dict$insert, key, 0, dict);
 	});
-var $author$project$Grid$map = A2($elm$core$Basics$composeL, $elm$core$List$map, $elm$core$List$map);
+var $author$project$Grid$discard = F2(
+	function (f, _v0) {
+		return f;
+	});
+var $author$project$Grid$map = F3(
+	function (f1, f2, f3) {
+		return A3(
+			$author$project$Grid$indexedMap,
+			$author$project$Grid$discard(f1),
+			$author$project$Grid$discard(f2),
+			$author$project$Grid$discard(f3));
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$List$drop = F2(
@@ -6070,15 +6088,15 @@ var $author$project$Main$update = F2(
 						if (_v4) {
 							var current = $author$project$Main$Pending(
 								A2(
-									$author$project$Grid$map,
-									$author$project$Main$Hidden,
+									$elm$core$List$map,
+									$elm$core$List$map($author$project$Main$Hidden),
 									A3(
 										$elm$core$List$foldl,
 										A3(
-											$author$project$Grid$mapRelationship,
-											$author$project$Grid$always($author$project$Main$Mine),
+											$author$project$Grid$map,
+											$elm$core$Basics$always($author$project$Main$Mine),
 											$author$project$Main$increment,
-											$author$project$Grid$identity),
+											$elm$core$Basics$identity),
 										A3(
 											$author$project$Grid$repeat,
 											state.m.A,
@@ -6292,8 +6310,8 @@ var $elm$html$Html$strong = _VirtualDom_node('strong');
 var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Main$renderSquare = F2(
-	function (coord, square) {
+var $author$project$Main$renderSquare = F3(
+	function (i, j, square) {
 		switch (square.$) {
 			case 0:
 				return A2(
@@ -6303,7 +6321,10 @@ var $author$project$Main$renderSquare = F2(
 						[
 							A2(
 							$elm$html$Html$button,
-							A2($author$project$Main$hiddenButtonAttributes, coord, square),
+							A2(
+								$author$project$Main$hiddenButtonAttributes,
+								_Utils_Tuple2(i, j),
+								square),
 							_List_fromArray(
 								[
 									A2($elm$html$Html$span, _List_Nil, _List_Nil)
@@ -6317,7 +6338,10 @@ var $author$project$Main$renderSquare = F2(
 						[
 							A2(
 							$elm$html$Html$button,
-							A2($author$project$Main$hiddenButtonAttributes, coord, square),
+							A2(
+								$author$project$Main$hiddenButtonAttributes,
+								_Utils_Tuple2(i, j),
+								square),
 							_List_fromArray(
 								[
 									A2(
@@ -6578,7 +6602,10 @@ var $author$project$Main$renderGrid = F2(
 					A2(
 						$elm$core$List$map,
 						$elm$html$Html$tr(_List_Nil),
-						A2($author$project$Grid$indexedMap, $author$project$Main$renderSquare, grid)))
+						A2(
+							$elm$core$List$indexedMap,
+							A2($elm$core$Basics$composeL, $elm$core$List$indexedMap, $author$project$Main$renderSquare),
+							grid)))
 				]));
 	});
 var $author$project$Main$Replay = function (a) {
