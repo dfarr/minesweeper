@@ -5409,7 +5409,7 @@ var $author$project$Main$Exposed = function (a) {
 var $author$project$Main$Failure = function (a) {
 	return {$: 3, a: a};
 };
-var $author$project$Main$Flagged = function (a) {
+var $author$project$Main$Marked = function (a) {
 	return {$: 1, a: a};
 };
 var $author$project$Main$Success = function (a) {
@@ -5499,6 +5499,19 @@ var $author$project$Main$check = function (grid) {
 		return $author$project$Main$Pending(grid);
 	}
 };
+var $author$project$Main$Clicked = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
+var $author$project$Main$click = F2(
+	function (coord, square) {
+		if (!square.$) {
+			return $elm$core$Maybe$Just(
+				A2($author$project$Main$Clicked, coord, square));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -5517,23 +5530,21 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $author$project$Main$Fire = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $author$project$Main$fire = F2(
-	function (coord, square) {
-		if (!square.$) {
-			return $elm$core$Maybe$Just(
-				A2($author$project$Main$Fire, coord, square));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $author$project$Grid$identity = F2(
 	function (_v0, x) {
 		return x;
 	});
+var $author$project$Grid$indexedMap = function (fn) {
+	return $elm$core$List$indexedMap(
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$core$List$indexedMap,
+			F2(
+				function (i, j) {
+					return fn(
+						_Utils_Tuple2(i, j));
+				})));
+};
 var $author$project$Grid$Identity = 0;
 var $author$project$Grid$Neighbor = 1;
 var $author$project$Grid$Neither = 2;
@@ -5578,23 +5589,19 @@ var $author$project$Grid$relationship = F2(
 	});
 var $author$project$Grid$mapRelationship = F4(
 	function (fn1, fn2, fn3, c1) {
-		return $elm$core$List$indexedMap(
-			A2(
-				$elm$core$Basics$composeL,
-				$elm$core$List$indexedMap,
-				F3(
-					function (i, j, x) {
-						var c2 = _Utils_Tuple2(i, j);
-						var _v0 = A2($author$project$Grid$relationship, c1, c2);
-						switch (_v0) {
-							case 0:
-								return A2(fn1, c2, x);
-							case 1:
-								return A2(fn2, c2, x);
-							default:
-								return A2(fn3, c2, x);
-						}
-					})));
+		return $author$project$Grid$indexedMap(
+			F2(
+				function (c2, x) {
+					var _v0 = A2($author$project$Grid$relationship, c1, c2);
+					switch (_v0) {
+						case 0:
+							return A2(fn1, c2, x);
+						case 1:
+							return A2(fn2, c2, x);
+						default:
+							return A2(fn3, c2, x);
+					}
+				}));
 	});
 var $author$project$Grid$mapIdentityRelationship = function (x) {
 	return A3(
@@ -5633,7 +5640,7 @@ var $author$project$Main$apply = F2(
 											A5(
 												$author$project$Grid$mapRelationship,
 												$author$project$Grid$always($elm$core$Maybe$Nothing),
-												$author$project$Main$fire,
+												$author$project$Main$click,
 												$author$project$Grid$always($elm$core$Maybe$Nothing),
 												coord,
 												grid))));
@@ -5674,7 +5681,7 @@ var $author$project$Main$apply = F2(
 							return $author$project$Main$Pending(
 								A3(
 									$author$project$Grid$mapIdentityRelationship,
-									$author$project$Main$Flagged(value),
+									$author$project$Main$Marked(value),
 									coord,
 									grid));
 						case 1:
@@ -6174,17 +6181,6 @@ var $author$project$Main$update = F2(
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Main$Reset = {$: 1};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $author$project$Grid$indexedMap = function (fn) {
-	return $elm$core$List$indexedMap(
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$core$List$indexedMap,
-			F2(
-				function (i, j) {
-					return fn(
-						_Utils_Tuple2(i, j));
-				})));
-};
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
 };
@@ -6223,7 +6219,7 @@ var $author$project$Main$Click = function (a) {
 var $author$project$Main$Clicking = function (a) {
 	return {$: 4, a: a};
 };
-var $author$project$Main$Flag = F2(
+var $author$project$Main$Flagged = F2(
 	function (a, b) {
 		return {$: 1, a: a, b: b};
 	});
@@ -6281,10 +6277,10 @@ var $author$project$Main$hiddenButtonAttributes = F2(
 					A2($elm$html$Html$Attributes$style, 'box-shadow', '1px 1px 1px 1px rgba(0,0,0,0.6)'),
 					$elm$html$Html$Events$onClick(
 					$author$project$Main$Click(
-						A2($author$project$Main$Fire, coord, square))),
+						A2($author$project$Main$Clicked, coord, square))),
 					$author$project$Main$onRightClick(
 					$author$project$Main$Click(
-						A2($author$project$Main$Flag, coord, square))),
+						A2($author$project$Main$Flagged, coord, square))),
 					$elm$html$Html$Events$onMouseDown(
 					$author$project$Main$Clicking(true)),
 					$elm$html$Html$Events$onMouseUp(
