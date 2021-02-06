@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.R.E === region.W.E)
+	if (region.R.F === region.W.F)
 	{
-		return 'on line ' + region.R.E;
+		return 'on line ' + region.R.F;
 	}
-	return 'on lines ' + region.R.E + ' through ' + region.W.E;
+	return 'on lines ' + region.R.F + ' through ' + region.W.F;
 }
 
 
@@ -5221,7 +5221,7 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$document = _Browser_document;
-var $author$project$Main$initBoard = {K: 16, n: 40, A: 16};
+var $author$project$Main$initBoard = {s: 16, e: 40, o: 16};
 var $author$project$Main$Setup = function (a) {
 	return {$: 2, a: a};
 };
@@ -5365,23 +5365,30 @@ var $elm$random$Random$int = F2(
 		};
 	});
 var $author$project$Main$initCommand = function (_v0) {
-	var rows = _v0.A;
-	var cols = _v0.K;
+	var rows = _v0.o;
+	var cols = _v0.s;
 	return A2(
 		$elm$random$Random$generate,
 		$author$project$Main$Setup,
-		A2($elm$random$Random$int, 0, rows * cols));
+		A2($elm$random$Random$int, 0, (rows * cols) - 1));
 };
 var $author$project$Main$Initial = {$: 0};
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $author$project$Main$initState = {m: $author$project$Main$initBoard, J: false, r: $author$project$Main$Initial, L: $author$project$Main$Initial, n: $elm$core$Set$empty, t: 0};
-var $author$project$Main$initModel = {i: _List_Nil, l: $author$project$Main$initState};
+var $author$project$Main$initState = function (board) {
+	return {i: board, K: false, t: $author$project$Main$Initial, L: $author$project$Main$Initial, e: $elm$core$Set$empty, v: 0};
+};
+var $author$project$Main$initModel = function (board) {
+	return {
+		j: _List_Nil,
+		l: $author$project$Main$initState(board)
+	};
+};
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		$author$project$Main$initModel,
+		$author$project$Main$initModel($author$project$Main$initBoard),
 		$author$project$Main$initCommand($author$project$Main$initBoard));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5394,6 +5401,9 @@ var $author$project$Main$Hidden = function (a) {
 };
 var $author$project$Main$Mine = {$: 1};
 var $author$project$Main$Pending = function (a) {
+	return {$: 1, a: a};
+};
+var $author$project$Main$Reset = function (a) {
 	return {$: 1, a: a};
 };
 var $author$project$Main$Safe = function (a) {
@@ -5847,6 +5857,10 @@ var $author$project$Grid$map = F3(
 			$author$project$Grid$discard(f2),
 			$author$project$Grid$discard(f3));
 	});
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$List$drop = F2(
@@ -6065,139 +6079,206 @@ var $elm$core$Set$size = function (_v0) {
 	var dict = _v0;
 	return $elm$core$Dict$size(dict);
 };
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Main$update = F2(
 	function (message, _v0) {
-		var state = _v0.l;
-		var events = _v0.i;
-		var _v1 = _Utils_Tuple2(message, state.r);
-		_v1$5:
+		update:
 		while (true) {
-			switch (_v1.a.$) {
-				case 1:
-					var _v2 = _v1.a;
-					return _Utils_Tuple2(
-						$author$project$Main$initModel,
-						$author$project$Main$initCommand(state.m));
-				case 2:
-					if (!_v1.b.$) {
-						var mine = _v1.a.a;
-						var _v3 = _v1.b;
-						var _v4 = _Utils_eq(
-							$elm$core$Set$size(state.n),
-							state.m.n);
-						if (_v4) {
-							var current = $author$project$Main$Pending(
-								A2(
-									$elm$core$List$map,
-									$elm$core$List$map($author$project$Main$Hidden),
-									A3(
-										$elm$core$List$foldl,
+			var state = _v0.l;
+			var events = _v0.j;
+			var _v1 = _Utils_Tuple2(message, state.t);
+			_v1$6:
+			while (true) {
+				switch (_v1.a.$) {
+					case 1:
+						var board = _v1.a.a;
+						return _Utils_Tuple2(
+							$author$project$Main$initModel(board),
+							$author$project$Main$initCommand(board));
+					case 2:
+						if (!_v1.b.$) {
+							var mine = _v1.a.a;
+							var _v2 = _v1.b;
+							var _v3 = _Utils_eq(
+								$elm$core$Set$size(state.e),
+								state.i.e);
+							if (_v3) {
+								var current = $author$project$Main$Pending(
+									A2(
+										$elm$core$List$map,
+										$elm$core$List$map($author$project$Main$Hidden),
 										A3(
-											$author$project$Grid$map,
-											$elm$core$Basics$always($author$project$Main$Mine),
-											$author$project$Main$increment,
-											$elm$core$Basics$identity),
-										A3(
-											$author$project$Grid$repeat,
-											state.m.A,
-											state.m.K,
-											$author$project$Main$Safe(0)),
-										A2(
-											$elm$core$List$map,
-											function (i) {
-												return _Utils_Tuple2(i % state.m.A, (i / state.m.A) | 0);
-											},
-											$elm$core$Set$toList(state.n)))));
+											$elm$core$List$foldl,
+											A3(
+												$author$project$Grid$map,
+												$elm$core$Basics$always($author$project$Main$Mine),
+												$author$project$Main$increment,
+												$elm$core$Basics$identity),
+											A3(
+												$author$project$Grid$repeat,
+												state.i.o,
+												state.i.s,
+												$author$project$Main$Safe(0)),
+											A2(
+												$elm$core$List$map,
+												function (i) {
+													return _Utils_Tuple2(i % state.i.o, (i / state.i.o) | 0);
+												},
+												$elm$core$Set$toList(state.e)))));
+								return _Utils_Tuple2(
+									{
+										j: events,
+										l: _Utils_update(
+											state,
+											{t: current, L: current})
+									},
+									$elm$core$Platform$Cmd$none);
+							} else {
+								return _Utils_Tuple2(
+									{
+										j: events,
+										l: _Utils_update(
+											state,
+											{
+												e: A2($elm$core$Set$insert, mine, state.e)
+											})
+									},
+									$author$project$Main$initCommand(state.i));
+							}
+						} else {
+							break _v1$6;
+						}
+					case 3:
+						if (_v1.b.$ === 1) {
+							var event = _v1.a.a;
+							var events_ = _Utils_ap(
+								A2($elm$core$List$take, state.v, events),
+								_List_fromArray(
+									[event]));
+							var current = A2($author$project$Main$apply, event, state.t);
 							return _Utils_Tuple2(
 								{
-									i: events,
+									j: events_,
 									l: _Utils_update(
 										state,
-										{r: current, L: current})
+										{t: current, v: state.v + 1})
 								},
 								$elm$core$Platform$Cmd$none);
 						} else {
+							break _v1$6;
+						}
+					case 4:
+						if (_v1.b.$ === 1) {
+							var c = _v1.a.a;
 							return _Utils_Tuple2(
 								{
-									i: events,
+									j: events,
 									l: _Utils_update(
 										state,
-										{
-											n: A2($elm$core$Set$insert, mine, state.n)
-										})
+										{K: c})
 								},
-								$author$project$Main$initCommand(state.m));
-						}
-					} else {
-						break _v1$5;
-					}
-				case 3:
-					if (_v1.b.$ === 1) {
-						var event = _v1.a.a;
-						var events_ = _Utils_ap(
-							A2($elm$core$List$take, state.t, events),
-							_List_fromArray(
-								[event]));
-						var current = A2($author$project$Main$apply, event, state.r);
-						return _Utils_Tuple2(
-							{
-								i: events_,
-								l: _Utils_update(
-									state,
-									{r: current, t: state.t + 1})
-							},
-							$elm$core$Platform$Cmd$none);
-					} else {
-						break _v1$5;
-					}
-				case 4:
-					if (_v1.b.$ === 1) {
-						var c = _v1.a.a;
-						return _Utils_Tuple2(
-							{
-								i: events,
-								l: _Utils_update(
-									state,
-									{J: c})
-							},
-							$elm$core$Platform$Cmd$none);
-					} else {
-						break _v1$5;
-					}
-				case 5:
-					var index = _v1.a.a;
-					var t = function () {
-						var _v5 = $elm$core$String$toInt(index);
-						if (!_v5.$) {
-							var _int = _v5.a;
-							return _int;
+								$elm$core$Platform$Cmd$none);
 						} else {
-							return state.t;
+							break _v1$6;
 						}
-					}();
-					var current = A3(
-						$elm$core$List$foldl,
-						$author$project$Main$apply,
-						state.L,
-						A2($elm$core$List$take, t, events));
-					return _Utils_Tuple2(
-						{
-							i: events,
-							l: _Utils_update(
-								state,
-								{r: current, t: t})
-						},
-						$elm$core$Platform$Cmd$none);
-				default:
-					break _v1$5;
+					case 5:
+						var index = _v1.a.a;
+						var t = function () {
+							var _v4 = $elm$core$String$toInt(index);
+							if (!_v4.$) {
+								var _int = _v4.a;
+								return _int;
+							} else {
+								return state.v;
+							}
+						}();
+						var current = A3(
+							$elm$core$List$foldl,
+							$author$project$Main$apply,
+							state.L,
+							A2($elm$core$List$take, t, events));
+						return _Utils_Tuple2(
+							{
+								j: events,
+								l: _Utils_update(
+									state,
+									{t: current, v: t})
+							},
+							$elm$core$Platform$Cmd$none);
+					case 6:
+						var boardUpdate = _v1.a.a;
+						var board = state.i;
+						var udpated = function () {
+							switch (boardUpdate.$) {
+								case 0:
+									var rows = boardUpdate.a;
+									return _Utils_update(
+										board,
+										{
+											o: A2(
+												$elm$core$Basics$max,
+												1,
+												A2(
+													$elm$core$Maybe$withDefault,
+													board.o,
+													$elm$core$String$toInt(rows)))
+										});
+								case 1:
+									var cols = boardUpdate.a;
+									return _Utils_update(
+										board,
+										{
+											s: A2(
+												$elm$core$Basics$max,
+												1,
+												A2(
+													$elm$core$Maybe$withDefault,
+													board.s,
+													$elm$core$String$toInt(cols)))
+										});
+								default:
+									var mines = boardUpdate.a;
+									return _Utils_update(
+										board,
+										{
+											e: A2(
+												$elm$core$Basics$max,
+												0,
+												A2(
+													$elm$core$Maybe$withDefault,
+													board.e,
+													$elm$core$String$toInt(mines)))
+										});
+							}
+						}();
+						var $temp$message = $author$project$Main$Reset(
+							_Utils_update(
+								udpated,
+								{
+									e: A2($elm$core$Basics$min, udpated.o * udpated.s, udpated.e)
+								})),
+							$temp$_v0 = {j: events, l: state};
+						message = $temp$message;
+						_v0 = $temp$_v0;
+						continue update;
+					default:
+						break _v1$6;
+				}
 			}
+			return _Utils_Tuple2(
+				{j: events, l: state},
+				$elm$core$Platform$Cmd$none);
 		}
-		return _Utils_Tuple2(
-			{i: events, l: state},
-			$elm$core$Platform$Cmd$none);
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $author$project$Main$Reset = {$: 1};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
@@ -6216,21 +6297,69 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$Main$NoOp = {$: 0};
+var $elm$virtual_dom$VirtualDom$Custom = function (a) {
+	return {$: 3, a: a};
+};
+var $elm$html$Html$Events$custom = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Custom(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $author$project$Main$toMsgWithOptions = F2(
+	function (message, id) {
+		if (id === 2) {
+			return {M: message, P: true, S: true};
+		} else {
+			return {M: $author$project$Main$NoOp, P: false, S: false};
+		}
+	});
+var $author$project$Main$msgWithOptionsDecoder = function (message) {
+	return A2(
+		$elm$json$Json$Decode$map,
+		$author$project$Main$toMsgWithOptions(message),
+		A2($elm$json$Json$Decode$field, 'button', $elm$json$Json$Decode$int));
+};
+var $author$project$Main$onRightClick = function (message) {
+	return A2(
+		$elm$html$Html$Events$custom,
+		'contextmenu',
+		$author$project$Main$msgWithOptionsDecoder(message));
+};
+var $author$project$Main$exposedButtonActions = F2(
+	function (_v0, _v1) {
+		return _List_fromArray(
+			[
+				$author$project$Main$onRightClick($author$project$Main$NoOp)
+			]);
+	});
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$Main$commonButtonAttributes = _List_fromArray(
+var $author$project$Main$buttonStyle = _List_fromArray(
 	[
-		A2($elm$html$Html$Attributes$style, 'width', '35px'),
-		A2($elm$html$Html$Attributes$style, 'height', '35px'),
-		A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+		A2($elm$html$Html$Attributes$style, 'font-size', '18px'),
+		A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+		A2($elm$html$Html$Attributes$style, 'margin', '0px'),
+		A2($elm$html$Html$Attributes$style, 'border', '0px'),
+		A2($elm$html$Html$Attributes$style, 'width', '100%'),
+		A2($elm$html$Html$Attributes$style, 'height', '100%')
 	]);
-var $author$project$Main$exposedButtonAttributes = _Utils_ap(
-	$author$project$Main$commonButtonAttributes,
+var $author$project$Main$exposedButtonStyle = _Utils_ap(
+	$author$project$Main$buttonStyle,
 	_List_fromArray(
 		[
-			A2($elm$html$Html$Attributes$style, 'box-shadow', 'inset 1px 1px 1px 1px rgba(0,0,0,0.6)')
+			A2($elm$html$Html$Attributes$style, 'background', 'rgb(219, 219, 219)')
 		]));
+var $author$project$Main$exposedButtonAttributes = F2(
+	function (coord, square) {
+		return _Utils_ap(
+			$author$project$Main$exposedButtonStyle,
+			A2($author$project$Main$exposedButtonActions, coord, square));
+	});
 var $author$project$Main$Click = function (a) {
 	return {$: 3, a: a};
 };
@@ -6253,330 +6382,246 @@ var $elm$html$Html$Events$onMouseUp = function (msg) {
 		'mouseup',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$virtual_dom$VirtualDom$Custom = function (a) {
-	return {$: 3, a: a};
-};
-var $elm$html$Html$Events$custom = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Custom(decoder));
+var $author$project$Main$hiddenButtonActions = F2(
+	function (coord, square) {
+		return _List_fromArray(
+			[
+				$elm$html$Html$Events$onClick(
+				$author$project$Main$Click(
+					A2($author$project$Main$Clicked, coord, square))),
+				$author$project$Main$onRightClick(
+				$author$project$Main$Click(
+					A2($author$project$Main$Flagged, coord, square))),
+				$elm$html$Html$Events$onMouseDown(
+				$author$project$Main$Clicking(true)),
+				$elm$html$Html$Events$onMouseUp(
+				$author$project$Main$Clicking(false))
+			]);
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $author$project$Main$NoOp = {$: 0};
-var $author$project$Main$toMsgWithOptions = F2(
-	function (message, id) {
-		if (id === 2) {
-			return {M: message, P: true, S: true};
-		} else {
-			return {M: $author$project$Main$NoOp, P: false, S: false};
-		}
-	});
-var $author$project$Main$msgWithOptionsDecoder = function (message) {
-	return A2(
-		$elm$json$Json$Decode$map,
-		$author$project$Main$toMsgWithOptions(message),
-		A2($elm$json$Json$Decode$field, 'button', $elm$json$Json$Decode$int));
-};
-var $author$project$Main$onRightClick = function (message) {
-	return A2(
-		$elm$html$Html$Events$custom,
-		'contextmenu',
-		$author$project$Main$msgWithOptionsDecoder(message));
-};
+var $author$project$Main$hiddenButtonStyle = _Utils_ap(
+	$author$project$Main$buttonStyle,
+	_List_fromArray(
+		[
+			A2($elm$html$Html$Attributes$style, 'background', 'rgb(239, 239, 239)')
+		]));
 var $author$project$Main$hiddenButtonAttributes = F2(
 	function (coord, square) {
 		return _Utils_ap(
-			$author$project$Main$commonButtonAttributes,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'box-shadow', '1px 1px 1px 1px rgba(0,0,0,0.6)'),
-					$elm$html$Html$Events$onClick(
-					$author$project$Main$Click(
-						A2($author$project$Main$Clicked, coord, square))),
-					$author$project$Main$onRightClick(
-					$author$project$Main$Click(
-						A2($author$project$Main$Flagged, coord, square))),
-					$elm$html$Html$Events$onMouseDown(
-					$author$project$Main$Clicking(true)),
-					$elm$html$Html$Events$onMouseUp(
-					$author$project$Main$Clicking(false))
-				]));
+			$author$project$Main$hiddenButtonStyle,
+			A2($author$project$Main$hiddenButtonActions, coord, square));
 	});
-var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$strong = _VirtualDom_node('strong');
-var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Main$renderButton = F3(
+	function (color, text_, attributes) {
+		return A2(
+			$elm$html$Html$button,
+			attributes,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$strong,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'color', color)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(text_)
+						]))
+				]));
+	});
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $author$project$Main$tdStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+		A2($elm$html$Html$Attributes$style, 'margin', '0px'),
+		A2($elm$html$Html$Attributes$style, 'width', '35px'),
+		A2($elm$html$Html$Attributes$style, 'height', '35px')
+	]);
 var $author$project$Main$renderSquare = F3(
 	function (i, j, square) {
+		var coord = _Utils_Tuple2(i, j);
 		switch (square.$) {
 			case 0:
 				return A2(
 					$elm$html$Html$td,
-					_List_Nil,
+					$author$project$Main$tdStyle,
 					_List_fromArray(
 						[
-							A2(
-							$elm$html$Html$button,
-							A2(
-								$author$project$Main$hiddenButtonAttributes,
-								_Utils_Tuple2(i, j),
-								square),
-							_List_fromArray(
-								[
-									A2($elm$html$Html$span, _List_Nil, _List_Nil)
-								]))
+							A3(
+							$author$project$Main$renderButton,
+							'',
+							'',
+							A2($author$project$Main$hiddenButtonAttributes, coord, square))
 						]));
 			case 1:
 				return A2(
 					$elm$html$Html$td,
-					_List_Nil,
+					$author$project$Main$tdStyle,
 					_List_fromArray(
 						[
-							A2(
-							$elm$html$Html$button,
-							A2(
-								$author$project$Main$hiddenButtonAttributes,
-								_Utils_Tuple2(i, j),
-								square),
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$strong,
-									_List_Nil,
-									_List_fromArray(
-										[
-											$elm$html$Html$text('🚩')
-										]))
-								]))
+							A3(
+							$author$project$Main$renderButton,
+							'',
+							'🚩',
+							A2($author$project$Main$hiddenButtonAttributes, coord, square))
 						]));
 			default:
 				if (square.a.$ === 1) {
 					var _v1 = square.a;
 					return A2(
 						$elm$html$Html$td,
-						_List_Nil,
+						$author$project$Main$tdStyle,
 						_List_fromArray(
 							[
-								A2(
-								$elm$html$Html$button,
-								$author$project$Main$exposedButtonAttributes,
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$strong,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text('💣')
-											]))
-									]))
+								A3(
+								$author$project$Main$renderButton,
+								'',
+								'💣',
+								A2($author$project$Main$exposedButtonAttributes, coord, square))
 							]));
 				} else {
 					switch (square.a.a) {
 						case 1:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'blue')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('1')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'blue',
+										'1',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 2:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'green')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('2')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'green',
+										'2',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 3:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'red')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('3')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'red',
+										'3',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 4:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'darkblue')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('4')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'darkblue',
+										'4',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 5:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'maroon')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('5')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'maroon',
+										'5',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 6:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'darkcyan')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('6')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'darkcyan',
+										'6',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 7:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'purple')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('7')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'purple',
+										'7',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 8:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2(
-										$elm$html$Html$button,
-										$author$project$Main$exposedButtonAttributes,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$strong,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'color', 'grey')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('8')
-													]))
-											]))
+										A3(
+										$author$project$Main$renderButton,
+										'grey',
+										'8',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						default:
 							return A2(
 								$elm$html$Html$td,
-								_List_Nil,
+								$author$project$Main$tdStyle,
 								_List_fromArray(
 									[
-										A2($elm$html$Html$button, $author$project$Main$exposedButtonAttributes, _List_Nil)
+										A3(
+										$author$project$Main$renderButton,
+										'',
+										'',
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 					}
 				}
 		}
 	});
 var $elm$html$Html$table = _VirtualDom_node('table');
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $author$project$Main$tableStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'margin', '0px auto 100px auto'),
+		A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(169, 169, 169)'),
+		A2($elm$html$Html$Attributes$attribute, 'cellpadding', '0'),
+		A2($elm$html$Html$Attributes$attribute, 'cellspacing', '0'),
+		A2($elm$html$Html$Attributes$attribute, 'border', '1')
+	]);
 var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$Main$renderGrid = F2(
-	function (emoji, grid) {
+var $author$project$Main$trStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+		A2($elm$html$Html$Attributes$style, 'margin', '0px')
+	]);
+var $author$project$Main$renderGrid = F3(
+	function (board, emoji, grid) {
 		return A2(
 			$elm$html$Html$div,
 			_List_Nil,
@@ -6587,7 +6632,9 @@ var $author$project$Main$renderGrid = F2(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-							$elm$html$Html$Events$onClick($author$project$Main$Reset)
+							A2($elm$html$Html$Attributes$style, 'font-size', '48px'),
+							$elm$html$Html$Events$onClick(
+							$author$project$Main$Reset(board))
 						]),
 					_List_fromArray(
 						[
@@ -6595,33 +6642,31 @@ var $author$project$Main$renderGrid = F2(
 						])),
 					A2(
 					$elm$html$Html$table,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'margin', '0 auto')
-						]),
+					$author$project$Main$tableStyle,
 					A2(
 						$elm$core$List$map,
-						$elm$html$Html$tr(_List_Nil),
+						$elm$html$Html$tr($author$project$Main$trStyle),
 						A2(
 							$elm$core$List$indexedMap,
 							A2($elm$core$Basics$composeL, $elm$core$List$indexedMap, $author$project$Main$renderSquare),
 							grid)))
 				]));
 	});
-var $author$project$Main$Replay = function (a) {
-	return {$: 5, a: a};
+var $author$project$Main$Cols = function (a) {
+	return {$: 1, a: a};
 };
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
+var $author$project$Main$Rows = function (a) {
+	return {$: 0, a: a};
+};
+var $author$project$Main$SetBoard = function (a) {
+	return {$: 6, a: a};
+};
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
 	});
-var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
-var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
+var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -6654,40 +6699,197 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$renderSlider = F2(
-	function (value, max) {
+var $author$project$Main$render1 = function (_v0) {
+	var rows = _v0.o;
+	var cols = _v0.s;
+	return A2(
+		$elm$html$Html$span,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'width', '36px'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(cols)),
+						$elm$html$Html$Events$onInput(
+						A2($elm$core$Basics$composeR, $author$project$Main$Cols, $author$project$Main$SetBoard))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$span,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(' ✖️ ')
+					])),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'width', '36px'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(rows)),
+						$elm$html$Html$Events$onInput(
+						A2($elm$core$Basics$composeR, $author$project$Main$Rows, $author$project$Main$SetBoard))
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$Main$Replay = function (a) {
+	return {$: 5, a: a};
+};
+var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
+var $author$project$Main$render2 = F2(
+	function (value_, max) {
+		return A2(
+			$elm$html$Html$input,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$type_('range'),
+					$elm$html$Html$Attributes$min('0'),
+					$elm$html$Html$Attributes$max(
+					$elm$core$String$fromInt(max)),
+					$elm$html$Html$Attributes$value(
+					$elm$core$String$fromInt(value_)),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'height', '50px'),
+					$elm$html$Html$Events$onInput($author$project$Main$Replay)
+				]),
+			_List_Nil);
+	});
+var $author$project$Main$Mines = function (a) {
+	return {$: 2, a: a};
+};
+var $author$project$Main$render3 = function (_v0) {
+	var mines = _v0.e;
+	return A2(
+		$elm$html$Html$span,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'width', '36px'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(mines)),
+						$elm$html$Html$Events$onInput(
+						A2($elm$core$Basics$composeR, $author$project$Main$Mines, $author$project$Main$SetBoard))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$span,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(' 💣 ')
+					]))
+			]));
+};
+var $author$project$Main$renderSlider = F3(
+	function (board, value, max) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+					A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+					A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
+					A2($elm$html$Html$Attributes$style, 'bottom', '0'),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'background', 'rgb(239, 239, 239)'),
+					A2($elm$html$Html$Attributes$style, 'border-top', '1px solid rgb(169, 169, 169)')
 				]),
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$input,
+					$elm$html$Html$table,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$type_('range'),
-							$elm$html$Html$Attributes$min('0'),
-							$elm$html$Html$Attributes$max(
-							$elm$core$String$fromInt(max)),
-							$elm$html$Html$Attributes$value(
-							$elm$core$String$fromInt(value)),
-							A2($elm$html$Html$Attributes$style, 'width', '100%'),
-							A2($elm$html$Html$Attributes$style, 'max-width', '500px'),
-							$elm$html$Html$Events$onInput($author$project$Main$Replay)
+							A2($elm$html$Html$Attributes$style, 'width', '100%')
 						]),
-					_List_Nil)
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'width', '20%')
+										]),
+									_List_fromArray(
+										[
+											$author$project$Main$render1(board)
+										])),
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'width', '60%')
+										]),
+									_List_fromArray(
+										[
+											A2($author$project$Main$render2, value, max)
+										])),
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'width', '20%')
+										]),
+									_List_fromArray(
+										[
+											$author$project$Main$render3(board)
+										]))
+								]))
+						]))
 				]));
 	});
 var $author$project$Main$render = function (_v0) {
 	var state = _v0.l;
-	var events = _v0.i;
+	var events = _v0.j;
 	var _v1 = function () {
-		var _v2 = _Utils_Tuple2(state.r, state.J);
+		var _v2 = _Utils_Tuple2(state.t, state.K);
 		switch (_v2.a.$) {
 			case 2:
 				var grid = _v2.a.a;
@@ -6714,10 +6916,11 @@ var $author$project$Main$render = function (_v0) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2($author$project$Main$renderGrid, emoji, grid_),
-				A2(
+				A3($author$project$Main$renderGrid, state.i, emoji, grid_),
+				A3(
 				$author$project$Main$renderSlider,
-				state.t,
+				state.i,
+				state.v,
 				$elm$core$List$length(events))
 			]));
 };
