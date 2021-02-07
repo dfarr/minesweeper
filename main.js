@@ -5377,14 +5377,9 @@ var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $author$project$Main$initState = function (board) {
-	return {i: board, K: false, t: $author$project$Main$Initial, L: $author$project$Main$Initial, e: $elm$core$Set$empty, v: 0};
-};
+var $author$project$Main$initState = {K: false, t: $author$project$Main$Initial, L: $author$project$Main$Initial, e: $elm$core$Set$empty, v: 0};
 var $author$project$Main$initModel = function (board) {
-	return {
-		j: _List_Nil,
-		l: $author$project$Main$initState(board)
-	};
+	return {i: board, j: _List_Nil, l: $author$project$Main$initState};
 };
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
@@ -5474,7 +5469,7 @@ var $elm$core$List$append = F2(
 var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
-var $author$project$Main$exposed = function (square) {
+var $author$project$Main$found = function (square) {
 	_v0$3:
 	while (true) {
 		switch (square.$) {
@@ -5505,7 +5500,7 @@ var $author$project$Main$exposed = function (square) {
 var $author$project$Main$check = function (grid) {
 	var _v0 = A2(
 		$elm$core$List$all,
-		$author$project$Main$exposed,
+		$author$project$Main$found,
 		$elm$core$List$concat(grid));
 	if (_v0) {
 		return $author$project$Main$Success(grid);
@@ -6093,23 +6088,24 @@ var $author$project$Main$update = F2(
 		update:
 		while (true) {
 			var state = _v0.l;
+			var board = _v0.i;
 			var events = _v0.j;
 			var _v1 = _Utils_Tuple2(message, state.t);
 			_v1$6:
 			while (true) {
 				switch (_v1.a.$) {
 					case 1:
-						var board = _v1.a.a;
+						var board_ = _v1.a.a;
 						return _Utils_Tuple2(
-							$author$project$Main$initModel(board),
-							$author$project$Main$initCommand(board));
+							$author$project$Main$initModel(board_),
+							$author$project$Main$initCommand(board_));
 					case 2:
 						if (!_v1.b.$) {
 							var mine = _v1.a.a;
 							var _v2 = _v1.b;
 							var _v3 = _Utils_eq(
 								$elm$core$Set$size(state.e),
-								state.i.e);
+								board.e);
 							if (_v3) {
 								var current = $author$project$Main$Pending(
 									A2(
@@ -6124,17 +6120,18 @@ var $author$project$Main$update = F2(
 												$elm$core$Basics$identity),
 											A3(
 												$author$project$Grid$repeat,
-												state.i.o,
-												state.i.s,
+												board.o,
+												board.s,
 												$author$project$Main$Safe(0)),
 											A2(
 												$elm$core$List$map,
 												function (i) {
-													return _Utils_Tuple2(i % state.i.o, (i / state.i.o) | 0);
+													return _Utils_Tuple2(i % board.o, (i / board.o) | 0);
 												},
 												$elm$core$Set$toList(state.e)))));
 								return _Utils_Tuple2(
 									{
+										i: board,
 										j: events,
 										l: _Utils_update(
 											state,
@@ -6144,6 +6141,7 @@ var $author$project$Main$update = F2(
 							} else {
 								return _Utils_Tuple2(
 									{
+										i: board,
 										j: events,
 										l: _Utils_update(
 											state,
@@ -6151,7 +6149,7 @@ var $author$project$Main$update = F2(
 												e: A2($elm$core$Set$insert, mine, state.e)
 											})
 									},
-									$author$project$Main$initCommand(state.i));
+									$author$project$Main$initCommand(board));
 							}
 						} else {
 							break _v1$6;
@@ -6166,6 +6164,7 @@ var $author$project$Main$update = F2(
 							var current = A2($author$project$Main$apply, event, state.t);
 							return _Utils_Tuple2(
 								{
+									i: board,
 									j: events_,
 									l: _Utils_update(
 										state,
@@ -6180,6 +6179,7 @@ var $author$project$Main$update = F2(
 							var c = _v1.a.a;
 							return _Utils_Tuple2(
 								{
+									i: board,
 									j: events,
 									l: _Utils_update(
 										state,
@@ -6190,16 +6190,11 @@ var $author$project$Main$update = F2(
 							break _v1$6;
 						}
 					case 5:
-						var index = _v1.a.a;
-						var t = function () {
-							var _v4 = $elm$core$String$toInt(index);
-							if (!_v4.$) {
-								var _int = _v4.a;
-								return _int;
-							} else {
-								return state.v;
-							}
-						}();
+						var t_ = _v1.a.a;
+						var t = A2(
+							$elm$core$Maybe$withDefault,
+							state.v,
+							$elm$core$String$toInt(t_));
 						var current = A3(
 							$elm$core$List$foldl,
 							$author$project$Main$apply,
@@ -6207,6 +6202,7 @@ var $author$project$Main$update = F2(
 							A2($elm$core$List$take, t, events));
 						return _Utils_Tuple2(
 							{
+								i: board,
 								j: events,
 								l: _Utils_update(
 									state,
@@ -6215,7 +6211,6 @@ var $author$project$Main$update = F2(
 							$elm$core$Platform$Cmd$none);
 					case 6:
 						var boardUpdate = _v1.a.a;
-						var board = state.i;
 						var udpated = function () {
 							switch (boardUpdate.$) {
 								case 0:
@@ -6265,7 +6260,7 @@ var $author$project$Main$update = F2(
 								{
 									e: A2($elm$core$Basics$min, udpated.o * udpated.s, udpated.e)
 								})),
-							$temp$_v0 = {j: events, l: state};
+							$temp$_v0 = {i: board, j: events, l: state};
 						message = $temp$message;
 						_v0 = $temp$_v0;
 						continue update;
@@ -6274,16 +6269,257 @@ var $author$project$Main$update = F2(
 				}
 			}
 			return _Utils_Tuple2(
-				{j: events, l: state},
+				{i: board, j: events, l: state},
 				$elm$core$Platform$Cmd$none);
 		}
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Main$Cols = function (a) {
+	return {$: 1, a: a};
+};
+var $author$project$Main$Rows = function (a) {
+	return {$: 0, a: a};
+};
+var $author$project$Main$SetBoard = function (a) {
+	return {$: 6, a: a};
+};
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 1, a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$Main$renderLeft = function (_v0) {
+	var rows = _v0.o;
+	var cols = _v0.s;
+	return A2(
+		$elm$html$Html$span,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'width', '36px'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(cols)),
+						$elm$html$Html$Events$onInput(
+						A2($elm$core$Basics$composeR, $author$project$Main$Cols, $author$project$Main$SetBoard))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$span,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(' ✖️ ')
+					])),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'width', '36px'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(rows)),
+						$elm$html$Html$Events$onInput(
+						A2($elm$core$Basics$composeR, $author$project$Main$Rows, $author$project$Main$SetBoard))
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$Main$Mines = function (a) {
+	return {$: 2, a: a};
+};
+var $author$project$Main$renderRight = function (_v0) {
+	var mines = _v0.e;
+	return A2(
+		$elm$html$Html$span,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'width', '36px'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(mines)),
+						$elm$html$Html$Events$onInput(
+						A2($elm$core$Basics$composeR, $author$project$Main$Mines, $author$project$Main$SetBoard))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$span,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(' 💣 ')
+					]))
+			]));
+};
+var $author$project$Main$Replay = function (a) {
+	return {$: 5, a: a};
+};
+var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
+var $author$project$Main$renderSlider = F2(
+	function (value_, max) {
+		return A2(
+			$elm$html$Html$input,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$type_('range'),
+					$elm$html$Html$Attributes$min('0'),
+					$elm$html$Html$Attributes$max(
+					$elm$core$String$fromInt(max)),
+					$elm$html$Html$Attributes$value(
+					$elm$core$String$fromInt(value_)),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'height', '50px'),
+					$elm$html$Html$Events$onInput($author$project$Main$Replay)
+				]),
+			_List_Nil);
+	});
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $author$project$Main$renderFoot = F3(
+	function (board, value, max) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+					A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
+					A2($elm$html$Html$Attributes$style, 'bottom', '0'),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'background', 'rgb(239, 239, 239)'),
+					A2($elm$html$Html$Attributes$style, 'border-top', '1px solid rgb(169, 169, 169)')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$table,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'width', '100%')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'width', '20%')
+										]),
+									_List_fromArray(
+										[
+											$author$project$Main$renderLeft(board)
+										])),
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'width', '60%')
+										]),
+									_List_fromArray(
+										[
+											A2($author$project$Main$renderSlider, value, max)
+										])),
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'width', '20%')
+										]),
+									_List_fromArray(
+										[
+											$author$project$Main$renderRight(board)
+										]))
+								]))
+						]))
+				]));
+	});
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
 };
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$on = F2(
 	function (event, decoder) {
 		return A2(
@@ -6308,7 +6544,6 @@ var $elm$html$Html$Events$custom = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$Custom(decoder));
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $author$project$Main$toMsgWithOptions = F2(
 	function (message, id) {
@@ -6337,8 +6572,6 @@ var $author$project$Main$exposedButtonActions = F2(
 				$author$project$Main$onRightClick($author$project$Main$NoOp)
 			]);
 	});
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Main$buttonStyle = _List_fromArray(
 	[
 		A2($elm$html$Html$Attributes$style, 'font-size', '18px'),
@@ -6412,8 +6645,6 @@ var $author$project$Main$hiddenButtonAttributes = F2(
 	});
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$strong = _VirtualDom_node('strong');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$renderButton = F3(
 	function (color, text_, attributes) {
 		return A2(
@@ -6433,7 +6664,6 @@ var $author$project$Main$renderButton = F3(
 						]))
 				]));
 	});
-var $elm$html$Html$td = _VirtualDom_node('td');
 var $author$project$Main$tdStyle = _List_fromArray(
 	[
 		A2($elm$html$Html$Attributes$style, 'padding', '0px'),
@@ -6443,7 +6673,6 @@ var $author$project$Main$tdStyle = _List_fromArray(
 	]);
 var $author$project$Main$renderSquare = F3(
 	function (i, j, square) {
-		var coord = _Utils_Tuple2(i, j);
 		switch (square.$) {
 			case 0:
 				return A2(
@@ -6455,7 +6684,10 @@ var $author$project$Main$renderSquare = F3(
 							$author$project$Main$renderButton,
 							'',
 							'',
-							A2($author$project$Main$hiddenButtonAttributes, coord, square))
+							A2(
+								$author$project$Main$hiddenButtonAttributes,
+								_Utils_Tuple2(i, j),
+								square))
 						]));
 			case 1:
 				return A2(
@@ -6467,7 +6699,10 @@ var $author$project$Main$renderSquare = F3(
 							$author$project$Main$renderButton,
 							'',
 							'🚩',
-							A2($author$project$Main$hiddenButtonAttributes, coord, square))
+							A2(
+								$author$project$Main$hiddenButtonAttributes,
+								_Utils_Tuple2(i, j),
+								square))
 						]));
 			default:
 				if (square.a.$ === 1) {
@@ -6481,7 +6716,10 @@ var $author$project$Main$renderSquare = F3(
 								$author$project$Main$renderButton,
 								'',
 								'💣',
-								A2($author$project$Main$exposedButtonAttributes, coord, square))
+								A2(
+									$author$project$Main$exposedButtonAttributes,
+									_Utils_Tuple2(i, j),
+									square))
 							]));
 				} else {
 					switch (square.a.a) {
@@ -6495,7 +6733,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'blue',
 										'1',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 2:
 							return A2(
@@ -6507,7 +6748,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'green',
 										'2',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 3:
 							return A2(
@@ -6519,7 +6763,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'red',
 										'3',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 4:
 							return A2(
@@ -6531,7 +6778,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'darkblue',
 										'4',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 5:
 							return A2(
@@ -6543,7 +6793,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'maroon',
 										'5',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 6:
 							return A2(
@@ -6555,7 +6808,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'darkcyan',
 										'6',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 7:
 							return A2(
@@ -6567,7 +6823,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'purple',
 										'7',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						case 8:
 							return A2(
@@ -6579,7 +6838,10 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'grey',
 										'8',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 						default:
 							return A2(
@@ -6591,13 +6853,15 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'',
 										'',
-										A2($author$project$Main$exposedButtonAttributes, coord, square))
+										A2(
+											$author$project$Main$exposedButtonAttributes,
+											_Utils_Tuple2(i, j),
+											square))
 									]));
 					}
 				}
 		}
 	});
-var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
 		return A2(
@@ -6614,7 +6878,6 @@ var $author$project$Main$tableStyle = _List_fromArray(
 		A2($elm$html$Html$Attributes$attribute, 'cellspacing', '0'),
 		A2($elm$html$Html$Attributes$attribute, 'border', '1')
 	]);
-var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Main$trStyle = _List_fromArray(
 	[
 		A2($elm$html$Html$Attributes$style, 'padding', '0px'),
@@ -6652,241 +6915,9 @@ var $author$project$Main$renderGrid = F3(
 							grid)))
 				]));
 	});
-var $author$project$Main$Cols = function (a) {
-	return {$: 1, a: a};
-};
-var $author$project$Main$Rows = function (a) {
-	return {$: 0, a: a};
-};
-var $author$project$Main$SetBoard = function (a) {
-	return {$: 6, a: a};
-};
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$render1 = function (_v0) {
-	var rows = _v0.o;
-	var cols = _v0.s;
-	return A2(
-		$elm$html$Html$span,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('text'),
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
-						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
-						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
-						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(
-						$elm$core$String$fromInt(cols)),
-						$elm$html$Html$Events$onInput(
-						A2($elm$core$Basics$composeR, $author$project$Main$Cols, $author$project$Main$SetBoard))
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$span,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '18px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(' ✖️ ')
-					])),
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('text'),
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
-						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
-						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
-						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(
-						$elm$core$String$fromInt(rows)),
-						$elm$html$Html$Events$onInput(
-						A2($elm$core$Basics$composeR, $author$project$Main$Rows, $author$project$Main$SetBoard))
-					]),
-				_List_Nil)
-			]));
-};
-var $author$project$Main$Replay = function (a) {
-	return {$: 5, a: a};
-};
-var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
-var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
-var $author$project$Main$render2 = F2(
-	function (value_, max) {
-		return A2(
-			$elm$html$Html$input,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$type_('range'),
-					$elm$html$Html$Attributes$min('0'),
-					$elm$html$Html$Attributes$max(
-					$elm$core$String$fromInt(max)),
-					$elm$html$Html$Attributes$value(
-					$elm$core$String$fromInt(value_)),
-					A2($elm$html$Html$Attributes$style, 'width', '100%'),
-					A2($elm$html$Html$Attributes$style, 'height', '50px'),
-					$elm$html$Html$Events$onInput($author$project$Main$Replay)
-				]),
-			_List_Nil);
-	});
-var $author$project$Main$Mines = function (a) {
-	return {$: 2, a: a};
-};
-var $author$project$Main$render3 = function (_v0) {
-	var mines = _v0.e;
-	return A2(
-		$elm$html$Html$span,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('text'),
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
-						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
-						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
-						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(
-						$elm$core$String$fromInt(mines)),
-						$elm$html$Html$Events$onInput(
-						A2($elm$core$Basics$composeR, $author$project$Main$Mines, $author$project$Main$SetBoard))
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$span,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '18px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(' 💣 ')
-					]))
-			]));
-};
-var $author$project$Main$renderSlider = F3(
-	function (board, value, max) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-					A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
-					A2($elm$html$Html$Attributes$style, 'bottom', '0'),
-					A2($elm$html$Html$Attributes$style, 'width', '100%'),
-					A2($elm$html$Html$Attributes$style, 'background', 'rgb(239, 239, 239)'),
-					A2($elm$html$Html$Attributes$style, 'border-top', '1px solid rgb(169, 169, 169)')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$table,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'width', '100%')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$tr,
-							_List_Nil,
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$td,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'width', '20%')
-										]),
-									_List_fromArray(
-										[
-											$author$project$Main$render1(board)
-										])),
-									A2(
-									$elm$html$Html$td,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'width', '60%')
-										]),
-									_List_fromArray(
-										[
-											A2($author$project$Main$render2, value, max)
-										])),
-									A2(
-									$elm$html$Html$td,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'width', '20%')
-										]),
-									_List_fromArray(
-										[
-											$author$project$Main$render3(board)
-										]))
-								]))
-						]))
-				]));
-	});
 var $author$project$Main$render = function (_v0) {
 	var state = _v0.l;
+	var board = _v0.i;
 	var events = _v0.j;
 	var _v1 = function () {
 		var _v2 = _Utils_Tuple2(state.t, state.K);
@@ -6916,10 +6947,10 @@ var $author$project$Main$render = function (_v0) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				A3($author$project$Main$renderGrid, state.i, emoji, grid_),
+				A3($author$project$Main$renderGrid, board, emoji, grid_),
 				A3(
-				$author$project$Main$renderSlider,
-				state.i,
+				$author$project$Main$renderFoot,
+				board,
 				state.v,
 				$elm$core$List$length(events))
 			]));
