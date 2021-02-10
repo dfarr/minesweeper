@@ -5598,7 +5598,7 @@ var $author$project$Main$initModel = function (board) {
 			}),
 		E: _List_Nil,
 		z: 0,
-		G: false,
+		K: false,
 		w: {n: initial, L: initial}
 	};
 };
@@ -6730,7 +6730,7 @@ var $author$project$Main$update = F2(
 		var state = _v0.w;
 		var events = _v0.E;
 		var _v1 = _Utils_Tuple2(message, state.n);
-		_v1$7:
+		_v1$6:
 		while (true) {
 			switch (_v1.a.$) {
 				case 1:
@@ -6834,7 +6834,7 @@ var $author$project$Main$update = F2(
 								}),
 							command);
 					} else {
-						break _v1$7;
+						break _v1$6;
 					}
 				case 4:
 					var event = _v1.a.a;
@@ -6862,25 +6862,12 @@ var $author$project$Main$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				case 3:
-					switch (_v1.b.$) {
-						case 0:
-							var value = _v1.a.a;
-							var _v6 = _v1.b;
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{G: value}),
-								$elm$core$Platform$Cmd$none);
-						case 1:
-							var value = _v1.a.a;
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{G: value}),
-								$elm$core$Platform$Cmd$none);
-						default:
-							break _v1$7;
-					}
+					var value = _v1.a.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{K: value}),
+						$elm$core$Platform$Cmd$none);
 				case 5:
 					var value = _v1.a.a;
 					var index_ = A2(
@@ -6915,7 +6902,7 @@ var $author$project$Main$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				default:
-					break _v1$7;
+					break _v1$6;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -7192,6 +7179,28 @@ var $author$project$Main$Special = F3(
 	function (a, b, c) {
 		return {$: 2, a: a, b: b, c: c};
 	});
+var $author$project$Main$Mouse = function (a) {
+	return {$: 3, a: a};
+};
+var $elm$html$Html$Events$onMouseDown = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mousedown',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$Events$onMouseUp = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mouseup',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$Main$buttonActions = _List_fromArray(
+	[
+		$elm$html$Html$Events$onMouseDown(
+		$author$project$Main$Mouse(true)),
+		$elm$html$Html$Events$onMouseUp(
+		$author$project$Main$Mouse(false))
+	]);
 var $elm$virtual_dom$VirtualDom$Custom = function (a) {
 	return {$: 3, a: a};
 };
@@ -7226,12 +7235,14 @@ var $author$project$Main$onRightClick = function (message) {
 };
 var $author$project$Main$exposedButtonActions = F3(
 	function (board, coord, square) {
-		return _List_fromArray(
-			[
-				$author$project$Main$onRightClick(
-				$author$project$Main$Click(
-					A3($author$project$Main$Special, board, coord, square)))
-			]);
+		return _Utils_ap(
+			$author$project$Main$buttonActions,
+			_List_fromArray(
+				[
+					$author$project$Main$onRightClick(
+					$author$project$Main$Click(
+						A3($author$project$Main$Special, board, coord, square)))
+				]));
 	});
 var $author$project$Main$buttonStyle = _List_fromArray(
 	[
@@ -7258,36 +7269,19 @@ var $author$project$Main$Flagged = F3(
 	function (a, b, c) {
 		return {$: 1, a: a, b: b, c: c};
 	});
-var $author$project$Main$Mouse = function (a) {
-	return {$: 3, a: a};
-};
-var $elm$html$Html$Events$onMouseDown = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'mousedown',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$html$Html$Events$onMouseUp = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'mouseup',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $author$project$Main$hiddenButtonActions = F3(
 	function (board, coord, square) {
-		return _List_fromArray(
-			[
-				$elm$html$Html$Events$onClick(
-				$author$project$Main$Click(
-					A3($author$project$Main$Clicked, board, coord, square))),
-				$author$project$Main$onRightClick(
-				$author$project$Main$Click(
-					A3($author$project$Main$Flagged, board, coord, square))),
-				$elm$html$Html$Events$onMouseDown(
-				$author$project$Main$Mouse(true)),
-				$elm$html$Html$Events$onMouseUp(
-				$author$project$Main$Mouse(false))
-			]);
+		return _Utils_ap(
+			$author$project$Main$buttonActions,
+			_List_fromArray(
+				[
+					$elm$html$Html$Events$onClick(
+					$author$project$Main$Click(
+						A3($author$project$Main$Clicked, board, coord, square))),
+					$author$project$Main$onRightClick(
+					$author$project$Main$Click(
+						A3($author$project$Main$Flagged, board, coord, square)))
+				]));
 	});
 var $author$project$Main$hiddenButtonStyle = _Utils_ap(
 	$author$project$Main$buttonStyle,
@@ -7589,7 +7583,7 @@ var $author$project$Main$renderGrid = F3(
 	});
 var $author$project$Main$render = function (_v0) {
 	var index = _v0.z;
-	var mouse = _v0.G;
+	var mouse = _v0.K;
 	var board = _v0.D;
 	var state = _v0.w;
 	var events = _v0.E;
