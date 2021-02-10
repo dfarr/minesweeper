@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.Q.E === region.V.E)
+	if (region.R.F === region.W.F)
 	{
-		return 'on line ' + region.Q.E;
+		return 'on line ' + region.R.F;
 	}
-	return 'on lines ' + region.Q.E + ' through ' + region.V.E;
+	return 'on lines ' + region.R.F + ' through ' + region.W.F;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aB,
-		impl.aJ,
-		impl.aH,
+		impl.aC,
+		impl.aK,
+		impl.aI,
 		function() { return function() {} }
 	);
 });
@@ -2704,9 +2704,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		L: func(record.L),
-		R: record.R,
-		O: record.O
+		M: func(record.M),
+		S: record.S,
+		P: record.P
 	}
 });
 
@@ -2974,11 +2974,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.L;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.R;
+		var message = !tag ? value : tag < 3 ? value.a : value.M;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.S;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.O) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.P) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3928,11 +3928,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aB,
-		impl.aJ,
-		impl.aH,
+		impl.aC,
+		impl.aK,
+		impl.aI,
 		function(sendToApp, initialModel) {
-			var view = impl.aK;
+			var view = impl.aL;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3964,12 +3964,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aB,
-		impl.aJ,
-		impl.aH,
+		impl.aC,
+		impl.aK,
+		impl.aI,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.P && impl.P(sendToApp)
-			var view = impl.aK;
+			var divertHrefToApp = impl.Q && impl.Q(sendToApp)
+			var view = impl.aL;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3977,12 +3977,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.au);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.av);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.aI) && (_VirtualDom_doc.title = title = doc.aI);
+				(title !== doc.aJ) && (_VirtualDom_doc.title = title = doc.aJ);
 			});
 		}
 	);
@@ -4038,12 +4038,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.aD;
-	var onUrlRequest = impl.aE;
+	var onUrlChange = impl.aE;
+	var onUrlRequest = impl.aF;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		P: function(sendToApp)
+		Q: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4059,9 +4059,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.ah === next.ah
-							&& curr.Z === next.Z
-							&& curr.ae.a === next.ae.a
+							&& curr.ai === next.ai
+							&& curr._ === next._
+							&& curr.af.a === next.af.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4069,13 +4069,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		aB: function(flags)
+		aC: function(flags)
 		{
-			return A3(impl.aB, flags, _Browser_getUrl(), key);
+			return A3(impl.aC, flags, _Browser_getUrl(), key);
 		},
+		aL: impl.aL,
 		aK: impl.aK,
-		aJ: impl.aJ,
-		aH: impl.aH
+		aI: impl.aI
 	});
 }
 
@@ -4141,17 +4141,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { az: 'hidden', av: 'visibilitychange' }
+		? { aA: 'hidden', aw: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { az: 'mozHidden', av: 'mozvisibilitychange' }
+		? { aA: 'mozHidden', aw: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { az: 'msHidden', av: 'msvisibilitychange' }
+		? { aA: 'msHidden', aw: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { az: 'webkitHidden', av: 'webkitvisibilitychange' }
-		: { az: 'hidden', av: 'visibilitychange' };
+		? { aA: 'webkitHidden', aw: 'webkitvisibilitychange' }
+		: { aA: 'hidden', aw: 'visibilitychange' };
 }
 
 
@@ -4232,12 +4232,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		al: _Browser_getScene(),
-		ao: {
-			aq: _Browser_window.pageXOffset,
-			ar: _Browser_window.pageYOffset,
-			ap: _Browser_doc.documentElement.clientWidth,
-			Y: _Browser_doc.documentElement.clientHeight
+		am: _Browser_getScene(),
+		ap: {
+			ar: _Browser_window.pageXOffset,
+			as: _Browser_window.pageYOffset,
+			aq: _Browser_doc.documentElement.clientWidth,
+			Z: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4247,8 +4247,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		ap: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		Y: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		aq: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		Z: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4271,15 +4271,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			al: {
-				ap: node.scrollWidth,
-				Y: node.scrollHeight
+			am: {
+				aq: node.scrollWidth,
+				Z: node.scrollHeight
 			},
-			ao: {
-				aq: node.scrollLeft,
-				ar: node.scrollTop,
-				ap: node.clientWidth,
-				Y: node.clientHeight
+			ap: {
+				ar: node.scrollLeft,
+				as: node.scrollTop,
+				aq: node.clientWidth,
+				Z: node.clientHeight
 			}
 		};
 	});
@@ -4309,18 +4309,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			al: _Browser_getScene(),
-			ao: {
-				aq: x,
-				ar: y,
-				ap: _Browser_doc.documentElement.clientWidth,
-				Y: _Browser_doc.documentElement.clientHeight
+			am: _Browser_getScene(),
+			ap: {
+				ar: x,
+				as: y,
+				aq: _Browser_doc.documentElement.clientWidth,
+				Z: _Browser_doc.documentElement.clientHeight
 			},
-			ax: {
-				aq: x + rect.left,
-				ar: y + rect.top,
-				ap: rect.width,
-				Y: rect.height
+			ay: {
+				ar: x + rect.left,
+				as: y + rect.top,
+				aq: rect.width,
+				Z: rect.height
 			}
 		};
 	});
@@ -4942,7 +4942,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {X: fragment, Z: host, ac: path, ae: port_, ah: protocol, ai: query};
+		return {Y: fragment, _: host, ad: path, af: port_, ai: protocol, aj: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5221,9 +5221,7 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$document = _Browser_document;
-var $author$project$Main$initBoard = _Utils_Tuple2(
-	_Utils_Tuple2(16, 16),
-	40);
+var $author$project$Main$initBoard = {i: 16, k: 40, f: 16};
 var $author$project$Main$Setup = function (a) {
 	return {$: 2, a: a};
 };
@@ -5367,9 +5365,8 @@ var $elm$random$Random$int = F2(
 		};
 	});
 var $author$project$Main$initCommand = function (_v0) {
-	var _v1 = _v0.a;
-	var rows = _v1.a;
-	var cols = _v1.b;
+	var rows = _v0.f;
+	var cols = _v0.i;
 	return A2(
 		$elm$random$Random$generate,
 		$author$project$Main$Setup,
@@ -5385,23 +5382,10 @@ var $author$project$Main$Initial = F2(
 var $author$project$Main$Safe = function (a) {
 	return {$: 0, a: a};
 };
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $elm$core$Tuple$mapBoth = F3(
-	function (funcA, funcB, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		return _Utils_Tuple2(
-			funcA(x),
-			funcB(y));
-	});
 var $elm$core$List$drop = F2(
 	function (n, list) {
 		drop:
@@ -5594,31 +5578,28 @@ var $author$project$Grid$repeat = F3(
 			n,
 			A2($elm$core$List$repeat, m * n, x));
 	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $author$project$Main$initModel = function (_int) {
-	var str = A3(
-		$elm$core$Tuple$mapBoth,
-		A2($elm$core$Tuple$mapBoth, $elm$core$String$fromInt, $elm$core$String$fromInt),
-		$elm$core$String$fromInt,
-		_int);
+var $author$project$Main$initModel = function (board) {
 	var initial = A2(
 		$author$project$Main$Initial,
 		$elm$core$Set$empty,
 		A3(
 			$author$project$Grid$repeat,
-			A3($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$first, _int),
-			A3($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$second, _int),
+			board.f,
+			board.i,
 			$author$project$Main$Hidden(
 				$author$project$Main$Safe(0))));
 	return {
-		C: {y: _int, p: str},
-		D: _List_Nil,
-		x: 0,
-		F: false,
-		u: {k: initial, K: initial}
+		D: _Utils_Tuple2(
+			board,
+			{
+				i: $elm$core$String$fromInt(board.i),
+				k: $elm$core$String$fromInt(board.k),
+				f: $elm$core$String$fromInt(board.f)
+			}),
+		E: _List_Nil,
+		z: 0,
+		G: false,
+		w: {n: initial, L: initial}
 	};
 };
 var $author$project$Main$init = function (_v0) {
@@ -5631,6 +5612,10 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
 var $author$project$Main$Clicked = F3(
 	function (a, b, c) {
 		return {$: 0, a: a, b: b, c: c};
@@ -5648,10 +5633,6 @@ var $author$project$Main$Mine = {$: 1};
 var $author$project$Main$Pending = function (a) {
 	return {$: 1, a: a};
 };
-var $elm$core$Basics$always = F2(
-	function (a, _v0) {
-		return a;
-	});
 var $author$project$Grid$always = F3(
 	function (x, _v0, _v1) {
 		return x;
@@ -6434,7 +6415,7 @@ var $author$project$Main$apply = F2(
 							var board = _v2.a;
 							var coord = _v2.b;
 							var square = _v2.c;
-							var index = A2($author$project$Grid$coordToIndex, board.a, coord);
+							var index = A2($author$project$Grid$coordToIndex, board.f, coord);
 							var indexes_ = function () {
 								var _v3 = A2($elm$core$Set$member, index, indexes);
 								if (_v3) {
@@ -6453,7 +6434,7 @@ var $author$project$Main$apply = F2(
 								grid,
 								A2(
 									$elm$core$List$map,
-									$author$project$Grid$indexToCoord(board.a),
+									$author$project$Grid$indexToCoord(board.f),
 									indexes_));
 							var square_ = A2(
 								$elm$core$Maybe$withDefault,
@@ -6699,12 +6680,24 @@ var $elm$core$Set$insert = F2(
 		var dict = _v0;
 		return A3($elm$core$Dict$insert, key, 0, dict);
 	});
+var $elm$core$Tuple$mapSecond = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			x,
+			func(y));
+	});
 var $elm$core$Basics$min = F2(
 	function (x, y) {
 		return (_Utils_cmp(x, y) < 0) ? x : y;
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
 var $elm$core$Dict$sizeHelp = F2(
 	function (n, dict) {
 		sizeHelp:
@@ -6732,87 +6725,123 @@ var $elm$core$Set$size = function (_v0) {
 var $author$project$Main$update = F2(
 	function (message, model) {
 		var _v0 = model;
-		var index = _v0.x;
-		var board = _v0.C;
-		var state = _v0.u;
-		var events = _v0.D;
-		var _v1 = board.y;
-		var _v2 = _v1.a;
-		var rows = _v2.a;
-		var cols = _v2.b;
-		var mines = _v1.b;
-		var _v3 = _Utils_Tuple2(message, state.k);
-		_v3$7:
+		var index = _v0.z;
+		var board = _v0.D;
+		var state = _v0.w;
+		var events = _v0.E;
+		var _v1 = _Utils_Tuple2(message, state.n);
+		_v1$7:
 		while (true) {
-			switch (_v3.a.$) {
+			switch (_v1.a.$) {
 				case 1:
-					var _v4 = _v3.a;
-					var rows_ = A2(
+					var _v2 = _v1.a;
+					var rows = A2(
 						$elm$core$Basics$max,
 						1,
 						A2(
 							$elm$core$Maybe$withDefault,
-							rows,
+							A3(
+								$elm$core$Basics$composeL,
+								function ($) {
+									return $.f;
+								},
+								$elm$core$Tuple$first,
+								board),
 							$elm$core$String$toInt(
-								A3($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$first, board.p))));
-					var cols_ = A2(
+								A3(
+									$elm$core$Basics$composeL,
+									function ($) {
+										return $.f;
+									},
+									$elm$core$Tuple$second,
+									board))));
+					var cols = A2(
 						$elm$core$Basics$max,
 						1,
 						A2(
 							$elm$core$Maybe$withDefault,
-							cols,
+							A3(
+								$elm$core$Basics$composeL,
+								function ($) {
+									return $.i;
+								},
+								$elm$core$Tuple$first,
+								board),
 							$elm$core$String$toInt(
-								A3($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$second, board.p))));
-					var mines_ = A2(
+								A3(
+									$elm$core$Basics$composeL,
+									function ($) {
+										return $.i;
+									},
+									$elm$core$Tuple$second,
+									board))));
+					var mines = A2(
 						$elm$core$Basics$min,
-						(rows_ * cols_) - 1,
+						(rows * cols) - 1,
 						A2(
 							$elm$core$Basics$max,
 							0,
 							A2(
 								$elm$core$Maybe$withDefault,
-								mines,
-								$elm$core$String$toInt(board.p.b))));
-					var board_ = _Utils_Tuple2(
-						_Utils_Tuple2(rows_, cols_),
-						mines_);
+								A3(
+									$elm$core$Basics$composeL,
+									function ($) {
+										return $.k;
+									},
+									$elm$core$Tuple$first,
+									board),
+								$elm$core$String$toInt(
+									A3(
+										$elm$core$Basics$composeL,
+										function ($) {
+											return $.k;
+										},
+										$elm$core$Tuple$second,
+										board)))));
+					var board_ = {i: cols, k: mines, f: rows};
 					return _Utils_Tuple2(
 						$author$project$Main$initModel(board_),
 						$author$project$Main$initCommand(board_));
 				case 2:
-					if (!_v3.b.$) {
-						var value = _v3.a.a;
-						var _v5 = _v3.b;
-						var indexes = _v5.a;
-						var grid = _v5.b;
+					if (!_v1.b.$) {
+						var value = _v1.a.a;
+						var _v3 = _v1.b;
+						var indexes = _v3.a;
+						var grid = _v3.b;
 						var indexes_ = A2($elm$core$Set$insert, value, indexes);
 						var initial = A2($author$project$Main$Initial, indexes_, grid);
 						var command = function () {
-							var _v6 = _Utils_eq(
+							var _v4 = _Utils_eq(
 								$elm$core$Set$size(indexes_),
-								mines + 1);
-							if (_v6) {
+								A3(
+									$elm$core$Basics$composeL,
+									function ($) {
+										return $.k;
+									},
+									$elm$core$Tuple$first,
+									board) + 1);
+							if (_v4) {
 								return $elm$core$Platform$Cmd$none;
 							} else {
-								return $author$project$Main$initCommand(board.y);
+								return $author$project$Main$initCommand(board.a);
 							}
 						}();
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
 								{
-									u: {k: initial, K: initial}
+									w: {n: initial, L: initial}
 								}),
 							command);
 					} else {
-						break _v3$7;
+						break _v1$7;
 					}
 				case 4:
-					var event = _v3.a.a;
-					var current = A2($author$project$Main$apply, event, state.k);
+					var event = _v1.a.a;
+					var current = A2($author$project$Main$apply, event, state.n);
 					var events_ = function () {
-						var _v7 = _Utils_eq(current, state.k);
-						if (_v7) {
+						var _v5 = _Utils_eq(current, state.n);
+						if (_v5) {
 							return events;
 						} else {
 							return _Utils_ap(
@@ -6825,35 +6854,35 @@ var $author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								D: events_,
-								x: index + 1,
-								u: _Utils_update(
+								E: events_,
+								z: index + 1,
+								w: _Utils_update(
 									state,
-									{k: current})
+									{n: current})
 							}),
 						$elm$core$Platform$Cmd$none);
 				case 3:
-					switch (_v3.b.$) {
+					switch (_v1.b.$) {
 						case 0:
-							var value = _v3.a.a;
-							var _v8 = _v3.b;
+							var value = _v1.a.a;
+							var _v6 = _v1.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{F: value}),
+									{G: value}),
 								$elm$core$Platform$Cmd$none);
 						case 1:
-							var value = _v3.a.a;
+							var value = _v1.a.a;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{F: value}),
+									{G: value}),
 								$elm$core$Platform$Cmd$none);
 						default:
-							break _v3$7;
+							break _v1$7;
 					}
 				case 5:
-					var value = _v3.a.a;
+					var value = _v1.a.a;
 					var index_ = A2(
 						$elm$core$Maybe$withDefault,
 						index,
@@ -6861,31 +6890,32 @@ var $author$project$Main$update = F2(
 					var current = A3(
 						$elm$core$List$foldl,
 						$author$project$Main$apply,
-						state.K,
+						state.L,
 						A2($elm$core$List$take, index_, events));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								x: index_,
-								u: _Utils_update(
+								z: index_,
+								w: _Utils_update(
 									state,
-									{k: current})
+									{n: current})
 							}),
 						$elm$core$Platform$Cmd$none);
 				case 6:
-					var str = _v3.a.a;
+					var board_ = _v1.a.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								C: _Utils_update(
-									board,
-									{p: str})
+								D: A2(
+									$elm$core$Tuple$mapSecond,
+									$elm$core$Basics$always(board_),
+									board)
 							}),
 						$elm$core$Platform$Cmd$none);
 				default:
-					break _v3$7;
+					break _v1$7;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -6895,16 +6925,6 @@ var $author$project$Main$Reset = {$: 1};
 var $author$project$Main$SetBoard = function (a) {
 	return {$: 6, a: a};
 };
-var $author$project$Main$alwaysFirst = F2(
-	function (_v0, x) {
-		var y = _v0.b;
-		return _Utils_Tuple2(x, y);
-	});
-var $author$project$Main$alwaysSecond = F2(
-	function (_v0, y) {
-		var x = _v0.a;
-		return _Utils_Tuple2(x, y);
-	});
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
@@ -6971,8 +6991,7 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$renderLeft = function (_v0) {
-	var str = _v0.p;
+var $author$project$Main$renderLeft = function (board) {
 	return A2(
 		$elm$html$Html$span,
 		_List_Nil,
@@ -6988,16 +7007,14 @@ var $author$project$Main$renderLeft = function (_v0) {
 						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(
-						A3($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$second, str)),
+						$elm$html$Html$Attributes$value(board.i),
 						$elm$html$Html$Events$onInput(
-						A2(
-							$elm$core$Basics$composeR,
-							$author$project$Main$alwaysSecond(str.a),
-							A2(
-								$elm$core$Basics$composeR,
-								$author$project$Main$alwaysFirst(str),
-								$author$project$Main$SetBoard))),
+						function (cols) {
+							return $author$project$Main$SetBoard(
+								_Utils_update(
+									board,
+									{i: cols}));
+						}),
 						$elm$html$Html$Events$onBlur($author$project$Main$Reset)
 					]),
 				_List_Nil),
@@ -7021,23 +7038,20 @@ var $author$project$Main$renderLeft = function (_v0) {
 						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(
-						A3($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$first, str)),
+						$elm$html$Html$Attributes$value(board.f),
 						$elm$html$Html$Events$onInput(
-						A2(
-							$elm$core$Basics$composeR,
-							$author$project$Main$alwaysFirst(str.a),
-							A2(
-								$elm$core$Basics$composeR,
-								$author$project$Main$alwaysFirst(str),
-								$author$project$Main$SetBoard))),
+						function (rows) {
+							return $author$project$Main$SetBoard(
+								_Utils_update(
+									board,
+									{f: rows}));
+						}),
 						$elm$html$Html$Events$onBlur($author$project$Main$Reset)
 					]),
 				_List_Nil)
 			]));
 };
-var $author$project$Main$renderRight = function (_v0) {
-	var str = _v0.p;
+var $author$project$Main$renderRight = function (board) {
 	return A2(
 		$elm$html$Html$span,
 		_List_Nil,
@@ -7053,12 +7067,14 @@ var $author$project$Main$renderRight = function (_v0) {
 						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(str.b),
+						$elm$html$Html$Attributes$value(board.k),
 						$elm$html$Html$Events$onInput(
-						A2(
-							$elm$core$Basics$composeR,
-							$author$project$Main$alwaysSecond(str),
-							$author$project$Main$SetBoard)),
+						function (mines) {
+							return $author$project$Main$SetBoard(
+								_Utils_update(
+									board,
+									{k: mines}));
+						}),
 						$elm$html$Html$Events$onBlur($author$project$Main$Reset)
 					]),
 				_List_Nil),
@@ -7191,9 +7207,9 @@ var $author$project$Main$NoOp = {$: 0};
 var $author$project$Main$toMsgWithOptions = F2(
 	function (message, id) {
 		if (id === 2) {
-			return {L: message, O: true, R: true};
+			return {M: message, P: true, S: true};
 		} else {
-			return {L: $author$project$Main$NoOp, O: false, R: false};
+			return {M: $author$project$Main$NoOp, P: false, S: false};
 		}
 	});
 var $author$project$Main$msgWithOptionsDecoder = function (message) {
@@ -7209,13 +7225,12 @@ var $author$project$Main$onRightClick = function (message) {
 		$author$project$Main$msgWithOptionsDecoder(message));
 };
 var $author$project$Main$exposedButtonActions = F3(
-	function (_v0, coord, square) {
-		var _int = _v0.y;
+	function (board, coord, square) {
 		return _List_fromArray(
 			[
 				$author$project$Main$onRightClick(
 				$author$project$Main$Click(
-					A3($author$project$Main$Special, _int.a, coord, square)))
+					A3($author$project$Main$Special, board, coord, square)))
 			]);
 	});
 var $author$project$Main$buttonStyle = _List_fromArray(
@@ -7259,16 +7274,15 @@ var $elm$html$Html$Events$onMouseUp = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $author$project$Main$hiddenButtonActions = F3(
-	function (_v0, coord, square) {
-		var _int = _v0.y;
+	function (board, coord, square) {
 		return _List_fromArray(
 			[
 				$elm$html$Html$Events$onClick(
 				$author$project$Main$Click(
-					A3($author$project$Main$Clicked, _int.a, coord, square))),
+					A3($author$project$Main$Clicked, board, coord, square))),
 				$author$project$Main$onRightClick(
 				$author$project$Main$Click(
-					A3($author$project$Main$Flagged, _int.a, coord, square))),
+					A3($author$project$Main$Flagged, board, coord, square))),
 				$elm$html$Html$Events$onMouseDown(
 				$author$project$Main$Mouse(true)),
 				$elm$html$Html$Events$onMouseUp(
@@ -7574,13 +7588,13 @@ var $author$project$Main$renderGrid = F3(
 				]));
 	});
 var $author$project$Main$render = function (_v0) {
-	var index = _v0.x;
-	var mouse = _v0.F;
-	var board = _v0.C;
-	var state = _v0.u;
-	var events = _v0.D;
+	var index = _v0.z;
+	var mouse = _v0.G;
+	var board = _v0.D;
+	var state = _v0.w;
+	var events = _v0.E;
 	var grid_ = function () {
-		var _v4 = state.k;
+		var _v4 = state.n;
 		switch (_v4.$) {
 			case 0:
 				var grid = _v4.b;
@@ -7597,7 +7611,7 @@ var $author$project$Main$render = function (_v0) {
 		}
 	}();
 	var emoji = function () {
-		var _v1 = _Utils_Tuple2(state.k, mouse);
+		var _v1 = _Utils_Tuple2(state.n, mouse);
 		switch (_v1.a.$) {
 			case 0:
 				if (_v1.b) {
@@ -7624,24 +7638,24 @@ var $author$project$Main$render = function (_v0) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				A3($author$project$Main$renderGrid, board, grid_, emoji),
+				A3($author$project$Main$renderGrid, board.a, grid_, emoji),
 				A3(
 				$author$project$Main$renderFoot,
-				board,
+				board.b,
 				index,
 				$elm$core$List$length(events))
 			]));
 };
 var $author$project$Main$view = function (model) {
 	return {
-		au: _List_fromArray(
+		av: _List_fromArray(
 			[
 				$author$project$Main$render(model)
 			]),
-		aI: 'Minesweeper'
+		aJ: 'Minesweeper'
 	};
 };
 var $author$project$Main$main = $elm$browser$Browser$document(
-	{aB: $author$project$Main$init, aH: $author$project$Main$subscriptions, aJ: $author$project$Main$update, aK: $author$project$Main$view});
+	{aC: $author$project$Main$init, aI: $author$project$Main$subscriptions, aK: $author$project$Main$update, aL: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
