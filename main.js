@@ -6850,16 +6850,12 @@ var $author$project$Main$update = F2(
 									[event]));
 						}
 					}();
-					var index_ = A2(
-						$elm$core$Basics$min,
-						$elm$core$List$length(events_),
-						index + 1);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
 								E: events_,
-								z: index_,
+								z: $elm$core$List$length(events_),
 								w: _Utils_update(
 									state,
 									{n: current})
