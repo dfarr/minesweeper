@@ -6839,23 +6839,27 @@ var $author$project$Main$update = F2(
 				case 4:
 					var event = _v1.a.a;
 					var current = A2($author$project$Main$apply, event, state.n);
-					var events_ = function () {
-						var _v5 = _Utils_eq(current, state.n);
-						if (_v5) {
-							return events;
+					var _v5 = function () {
+						var _v6 = _Utils_eq(current, state.n);
+						if (_v6) {
+							return _Utils_Tuple2(index, events);
 						} else {
-							return _Utils_ap(
-								A2($elm$core$List$take, index, events),
-								_List_fromArray(
-									[event]));
+							return _Utils_Tuple2(
+								index + 1,
+								_Utils_ap(
+									A2($elm$core$List$take, index, events),
+									_List_fromArray(
+										[event])));
 						}
 					}();
+					var index_ = _v5.a;
+					var events_ = _v5.b;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
 								E: events_,
-								z: $elm$core$List$length(events_),
+								z: index_,
 								w: _Utils_update(
 									state,
 									{n: current})
