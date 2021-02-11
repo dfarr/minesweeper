@@ -6850,12 +6850,16 @@ var $author$project$Main$update = F2(
 									[event]));
 						}
 					}();
+					var index_ = A2(
+						$elm$core$Basics$min,
+						$elm$core$List$length(events_),
+						index + 1);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
 								E: events_,
-								z: index + 1,
+								z: index_,
 								w: _Utils_update(
 									state,
 									{n: current})
@@ -6978,7 +6982,7 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$renderLeft = function (board) {
+var $author$project$Main$renderInputLeft = function (board) {
 	return A2(
 		$elm$html$Html$span,
 		_List_Nil,
@@ -7038,7 +7042,7 @@ var $author$project$Main$renderLeft = function (board) {
 				_List_Nil)
 			]));
 };
-var $author$project$Main$renderRight = function (board) {
+var $author$project$Main$renderInputRight = function (board) {
 	return A2(
 		$elm$html$Html$span,
 		_List_Nil,
@@ -7100,11 +7104,56 @@ var $author$project$Main$renderSlider = F2(
 				]),
 			_List_Nil);
 	});
+var $author$project$Main$exposed = function (square) {
+	if (square.$ === 2) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $author$project$Main$hidden = function (square) {
+	if (!square.$) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $author$project$Main$renderStatsLeft = F3(
+	function (squares, index, events) {
+		var hidden_ = $elm$core$String$fromInt(
+			$elm$core$List$length(
+				A2($elm$core$List$filter, $author$project$Main$hidden, squares)));
+		var flagged_ = $elm$core$String$fromInt(
+			$elm$core$List$length(
+				A2($elm$core$List$filter, $author$project$Main$marked, squares)));
+		var exposed_ = $elm$core$String$fromInt(
+			$elm$core$List$length(
+				A2($elm$core$List$filter, $author$project$Main$exposed, squares)));
+		return $elm$html$Html$text(
+			'event = ' + ($elm$core$String$fromInt(index) + (' of ' + ($elm$core$String$fromInt(events) + (' | hidden = ' + (hidden_ + (' | exposed = ' + (exposed_ + (' | flagged = ' + flagged_)))))))));
+	});
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $author$project$Main$renderStatsRight = A2(
+	$elm$html$Html$a,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$href('https://github.com/dfarr/minesweeper')
+		]),
+	_List_fromArray(
+		[
+			$elm$html$Html$text('dfarr/minesweeper')
+		]));
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$Main$renderFoot = F3(
-	function (board, value, max) {
+var $author$project$Main$renderFoot = F4(
+	function (board, grid, value, max) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7113,6 +7162,7 @@ var $author$project$Main$renderFoot = F3(
 					A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
 					A2($elm$html$Html$Attributes$style, 'bottom', '0'),
 					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
 					A2($elm$html$Html$Attributes$style, 'background', 'rgb(239, 239, 239)'),
 					A2($elm$html$Html$Attributes$style, 'border-top', '1px solid rgb(169, 169, 169)')
 				]),
@@ -7139,7 +7189,7 @@ var $author$project$Main$renderFoot = F3(
 										]),
 									_List_fromArray(
 										[
-											$author$project$Main$renderLeft(board)
+											$author$project$Main$renderInputLeft(board)
 										])),
 									A2(
 									$elm$html$Html$td,
@@ -7159,8 +7209,48 @@ var $author$project$Main$renderFoot = F3(
 										]),
 									_List_fromArray(
 										[
-											$author$project$Main$renderRight(board)
+											$author$project$Main$renderInputRight(board)
 										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$table,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'width', '100%'),
+							A2($elm$html$Html$Attributes$style, 'padding', '5px 15px'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '14px'),
+							A2($elm$html$Html$Attributes$style, 'background', 'rgb(219, 219, 219)')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'text-align', 'left')
+										]),
+									_List_fromArray(
+										[
+											A3(
+											$author$project$Main$renderStatsLeft,
+											$elm$core$List$concat(grid),
+											value,
+											max)
+										])),
+									A2(
+									$elm$html$Html$td,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'text-align', 'right')
+										]),
+									_List_fromArray(
+										[$author$project$Main$renderStatsRight]))
 								]))
 						]))
 				]));
@@ -7633,9 +7723,10 @@ var $author$project$Main$render = function (_v0) {
 		_List_fromArray(
 			[
 				A3($author$project$Main$renderGrid, board.a, grid_, emoji),
-				A3(
+				A4(
 				$author$project$Main$renderFoot,
 				board.b,
+				grid_,
 				index,
 				$elm$core$List$length(events))
 			]));
