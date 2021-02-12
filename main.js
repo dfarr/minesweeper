@@ -6993,10 +6993,13 @@ var $author$project$Main$renderInputLeft = function (board) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'color', 'rgb(20, 20, 20)'),
 						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
 						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
 						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(20, 20, 20)'),
+						A2($elm$html$Html$Attributes$style, 'border-radius', '0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
 						$elm$html$Html$Attributes$value(board.i),
 						$elm$html$Html$Events$onInput(
@@ -7024,10 +7027,13 @@ var $author$project$Main$renderInputLeft = function (board) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'color', 'rgb(20, 20, 20)'),
 						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
 						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
 						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(20, 20, 20)'),
+						A2($elm$html$Html$Attributes$style, 'border-radius', '0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
 						$elm$html$Html$Attributes$value(board.f),
 						$elm$html$Html$Events$onInput(
@@ -7053,10 +7059,13 @@ var $author$project$Main$renderInputRight = function (board) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$type_('text'),
+						A2($elm$html$Html$Attributes$style, 'color', 'rgb(20, 20, 20)'),
 						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
 						A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
 						A2($elm$html$Html$Attributes$style, 'background', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border-width', '0px 0px 2px 0px'),
+						A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(20, 20, 20)'),
+						A2($elm$html$Html$Attributes$style, 'border-radius', '0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
 						$elm$html$Html$Attributes$value(board.k),
 						$elm$html$Html$Events$onInput(
@@ -7098,8 +7107,12 @@ var $author$project$Main$renderSlider = F2(
 					$elm$core$String$fromInt(max)),
 					$elm$html$Html$Attributes$value(
 					$elm$core$String$fromInt(value_)),
+					A2($elm$html$Html$Attributes$style, '-webkit-appearance', 'none'),
+					A2($elm$html$Html$Attributes$style, 'background', 'rgb(219, 219, 219)'),
+					A2($elm$html$Html$Attributes$style, 'border', '2px solid rgb(169, 169, 169)'),
+					A2($elm$html$Html$Attributes$style, 'border-radius', '20px'),
 					A2($elm$html$Html$Attributes$style, 'width', '100%'),
-					A2($elm$html$Html$Attributes$style, 'height', '50px'),
+					A2($elm$html$Html$Attributes$style, 'height', '20px'),
 					$elm$html$Html$Events$onInput($author$project$Main$Replay)
 				]),
 			_List_Nil);
@@ -7158,9 +7171,9 @@ var $author$project$Main$renderFoot = F4(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-					A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
 					A2($elm$html$Html$Attributes$style, 'bottom', '0'),
+					A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
+					A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
 					A2($elm$html$Html$Attributes$style, 'width', '100%'),
 					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
 					A2($elm$html$Html$Attributes$style, 'background', 'rgb(239, 239, 239)'),
@@ -7172,7 +7185,8 @@ var $author$project$Main$renderFoot = F4(
 					$elm$html$Html$table,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$style, 'width', '100%')
+							A2($elm$html$Html$Attributes$style, 'width', '100%'),
+							A2($elm$html$Html$Attributes$style, 'padding', '10px 15px')
 						]),
 					_List_fromArray(
 						[
@@ -7626,8 +7640,7 @@ var $elm$virtual_dom$VirtualDom$attribute = F2(
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $author$project$Main$tableStyle = _List_fromArray(
 	[
-		A2($elm$html$Html$Attributes$style, 'margin', '0px auto 100px auto'),
-		A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(169, 169, 169)'),
+		A2($elm$html$Html$Attributes$style, 'margin', '0 auto 120px auto'),
 		A2($elm$html$Html$Attributes$attribute, 'cellpadding', '0'),
 		A2($elm$html$Html$Attributes$attribute, 'cellspacing', '0'),
 		A2($elm$html$Html$Attributes$attribute, 'border', '1')
