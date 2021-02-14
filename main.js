@@ -5788,6 +5788,11 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
 var $author$project$Grid$Identity = 0;
 var $author$project$Grid$Neighbor = 1;
 var $author$project$Grid$Neither = 2;
@@ -5830,35 +5835,31 @@ var $author$project$Grid$relationship = F2(
 		}
 		return 2;
 	});
-var $author$project$Grid$mapRelationship = F5(
+var $author$project$Grid$indexedMapRelationship = F5(
 	function (f1, f2, f3, c1, c2) {
 		var _v0 = A2($author$project$Grid$relationship, c1, c2);
 		switch (_v0) {
 			case 0:
-				return f1;
+				return f1(c2);
 			case 1:
-				return f2;
+				return f2(c2);
 			default:
-				return f3;
+				return f3(c2);
 		}
+	});
+var $author$project$Grid$withCoord = F3(
+	function (f, i, j) {
+		return f(
+			_Utils_Tuple2(i, j));
 	});
 var $author$project$Grid$indexedMap = F4(
 	function (f1, f2, f3, c1) {
 		return $elm$core$List$indexedMap(
 			A2(
-				$elm$core$Basics$composeL,
-				$elm$core$List$indexedMap,
-				F2(
-					function (i, j) {
-						var c2 = _Utils_Tuple2(i, j);
-						return A5(
-							$author$project$Grid$mapRelationship,
-							f1(c2),
-							f2(c2),
-							f3(c2),
-							c1,
-							c2);
-					})));
+				$elm$core$Basics$composeR,
+				$author$project$Grid$withCoord(
+					A4($author$project$Grid$indexedMapRelationship, f1, f2, f3, c1)),
+				$elm$core$List$indexedMap));
 	});
 var $author$project$Main$isMine = function (square) {
 	_v0$2:
@@ -5907,6 +5908,14 @@ var $author$project$Grid$mapIdentity = function (x) {
 		$author$project$Grid$identity,
 		$author$project$Grid$identity);
 };
+var $author$project$Grid$mapRelationship = F3(
+	function (f1, f2, f3) {
+		return A3(
+			$author$project$Grid$indexedMapRelationship,
+			$author$project$Grid$discard(f1),
+			$author$project$Grid$discard(f2),
+			$author$project$Grid$discard(f3));
+	});
 var $author$project$Main$marked = function (square) {
 	if (square.$ === 1) {
 		return true;
@@ -7011,8 +7020,8 @@ var $author$project$Main$tdStyle = _List_fromArray(
 		A2($elm$html$Html$Attributes$style, 'width', '35px'),
 		A2($elm$html$Html$Attributes$style, 'height', '35px')
 	]);
-var $author$project$Main$renderSquare = F3(
-	function (i, j, square) {
+var $author$project$Main$renderSquare = F2(
+	function (coord, square) {
 		switch (square.$) {
 			case 0:
 				return A2(
@@ -7024,10 +7033,7 @@ var $author$project$Main$renderSquare = F3(
 							$author$project$Main$renderButton,
 							'',
 							'',
-							A2(
-								$author$project$Main$hiddenButtonAttributes,
-								_Utils_Tuple2(i, j),
-								square))
+							A2($author$project$Main$hiddenButtonAttributes, coord, square))
 						]));
 			case 1:
 				return A2(
@@ -7039,10 +7045,7 @@ var $author$project$Main$renderSquare = F3(
 							$author$project$Main$renderButton,
 							'',
 							'🚩',
-							A2(
-								$author$project$Main$hiddenButtonAttributes,
-								_Utils_Tuple2(i, j),
-								square))
+							A2($author$project$Main$hiddenButtonAttributes, coord, square))
 						]));
 			default:
 				if (square.a.$ === 1) {
@@ -7056,10 +7059,7 @@ var $author$project$Main$renderSquare = F3(
 								$author$project$Main$renderButton,
 								'',
 								'💣',
-								A2(
-									$author$project$Main$exposedButtonAttributes,
-									_Utils_Tuple2(i, j),
-									square))
+								A2($author$project$Main$exposedButtonAttributes, coord, square))
 							]));
 				} else {
 					switch (square.a.a) {
@@ -7073,10 +7073,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'blue',
 										'1',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 2:
 							return A2(
@@ -7088,10 +7085,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'green',
 										'2',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 3:
 							return A2(
@@ -7103,10 +7097,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'red',
 										'3',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 4:
 							return A2(
@@ -7118,10 +7109,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'darkblue',
 										'4',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 5:
 							return A2(
@@ -7133,10 +7121,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'maroon',
 										'5',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 6:
 							return A2(
@@ -7148,10 +7133,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'darkcyan',
 										'6',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 7:
 							return A2(
@@ -7163,10 +7145,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'purple',
 										'7',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						case 8:
 							return A2(
@@ -7178,10 +7157,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'grey',
 										'8',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 						default:
 							return A2(
@@ -7193,10 +7169,7 @@ var $author$project$Main$renderSquare = F3(
 										$author$project$Main$renderButton,
 										'',
 										'',
-										A2(
-											$author$project$Main$exposedButtonAttributes,
-											_Utils_Tuple2(i, j),
-											square))
+										A2($author$project$Main$exposedButtonAttributes, coord, square))
 									]));
 					}
 				}
@@ -7249,7 +7222,10 @@ var $author$project$Main$renderGrid = F2(
 						$elm$html$Html$tr($author$project$Main$trStyle),
 						A2(
 							$elm$core$List$indexedMap,
-							A2($elm$core$Basics$composeL, $elm$core$List$indexedMap, $author$project$Main$renderSquare),
+							A2(
+								$elm$core$Basics$composeL,
+								$elm$core$List$indexedMap,
+								$author$project$Grid$withCoord($author$project$Main$renderSquare)),
 							grid)))
 				]));
 	});
