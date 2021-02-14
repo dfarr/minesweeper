@@ -6388,7 +6388,7 @@ var $author$project$Main$update = F2(
 						var mines_ = A2($elm$core$Set$insert, value, mines);
 						var _v5 = function () {
 							var _v6 = _Utils_eq(
-								$elm$core$Set$size(mines),
+								$elm$core$Set$size(mines_),
 								intBoard.e + 1);
 							if (_v6) {
 								return _Utils_Tuple2(
