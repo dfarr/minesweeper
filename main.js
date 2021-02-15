@@ -5633,10 +5633,6 @@ var $elm$core$Basics$always = F2(
 	function (a, _v0) {
 		return a;
 	});
-var $author$project$Grid$always = F3(
-	function (x, _v0, _v1) {
-		return x;
-	});
 var $author$project$Main$Success = function (a) {
 	return {$: 2, a: a};
 };
@@ -5724,15 +5720,16 @@ var $author$project$Main$check = function (grid) {
 		return $author$project$Main$Pending(grid);
 	}
 };
-var $author$project$Main$click = F2(
-	function (coord, square) {
-		if (!square.$) {
-			return $elm$core$Maybe$Just(
-				A2($author$project$Main$Clicked, coord, square));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
+var $author$project$Main$click = function (_v0) {
+	var coord = _v0.a;
+	var square = _v0.b;
+	if (!square.$) {
+		return $elm$core$Maybe$Just(
+			A2($author$project$Main$Clicked, coord, square));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $author$project$Main$decrement = function (square) {
 	_v0$2:
 	while (true) {
@@ -5793,6 +5790,10 @@ var $elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
 var $author$project$Grid$Identity = 0;
 var $author$project$Grid$Neighbor = 1;
 var $author$project$Grid$Neither = 2;
@@ -5840,11 +5841,20 @@ var $author$project$Grid$indexedMapRelationship = F5(
 		var _v0 = A2($author$project$Grid$relationship, c1, c2);
 		switch (_v0) {
 			case 0:
-				return f1(c2);
+				return A2(
+					$elm$core$Basics$composeL,
+					f1,
+					$elm$core$Tuple$pair(c2));
 			case 1:
-				return f2(c2);
+				return A2(
+					$elm$core$Basics$composeL,
+					f2,
+					$elm$core$Tuple$pair(c2));
 			default:
-				return f3(c2);
+				return A2(
+					$elm$core$Basics$composeL,
+					f3,
+					$elm$core$Tuple$pair(c2));
 		}
 	});
 var $author$project$Grid$withCoord = F3(
@@ -5885,36 +5895,32 @@ var $author$project$Main$isMine = function (square) {
 	}
 	return false;
 };
-var $author$project$Grid$discard = F2(
-	function (f, _v0) {
-		return f;
-	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
 var $author$project$Grid$map = F3(
 	function (f1, f2, f3) {
 		return A3(
 			$author$project$Grid$indexedMap,
-			$author$project$Grid$discard(f1),
-			$author$project$Grid$discard(f2),
-			$author$project$Grid$discard(f3));
-	});
-var $author$project$Grid$identity = F2(
-	function (_v0, x) {
-		return x;
+			A2($elm$core$Basics$composeL, f1, $elm$core$Tuple$second),
+			A2($elm$core$Basics$composeL, f2, $elm$core$Tuple$second),
+			A2($elm$core$Basics$composeL, f3, $elm$core$Tuple$second));
 	});
 var $author$project$Grid$mapIdentity = function (x) {
 	return A3(
 		$author$project$Grid$indexedMap,
-		$author$project$Grid$always(x),
-		$author$project$Grid$identity,
-		$author$project$Grid$identity);
+		$elm$core$Basics$always(x),
+		$elm$core$Tuple$second,
+		$elm$core$Tuple$second);
 };
 var $author$project$Grid$mapRelationship = F3(
 	function (f1, f2, f3) {
 		return A3(
 			$author$project$Grid$indexedMapRelationship,
-			$author$project$Grid$discard(f1),
-			$author$project$Grid$discard(f2),
-			$author$project$Grid$discard(f3));
+			A2($elm$core$Basics$composeL, f1, $elm$core$Tuple$second),
+			A2($elm$core$Basics$composeL, f2, $elm$core$Tuple$second),
+			A2($elm$core$Basics$composeL, f3, $elm$core$Tuple$second));
 	});
 var $author$project$Main$marked = function (square) {
 	if (square.$ === 1) {
@@ -6047,9 +6053,9 @@ var $author$project$Main$apply = F2(
 												$elm$core$List$concat(
 													A5(
 														$author$project$Grid$indexedMap,
-														$author$project$Grid$always($elm$core$Maybe$Nothing),
+														$elm$core$Basics$always($elm$core$Maybe$Nothing),
 														$author$project$Main$click,
-														$author$project$Grid$always($elm$core$Maybe$Nothing),
+														$elm$core$Basics$always($elm$core$Maybe$Nothing),
 														coord,
 														grid))));
 									} else {
@@ -6136,9 +6142,9 @@ var $author$project$Main$apply = F2(
 											$elm$core$List$concat(
 												A5(
 													$author$project$Grid$indexedMap,
-													$author$project$Grid$always($elm$core$Maybe$Nothing),
+													$elm$core$Basics$always($elm$core$Maybe$Nothing),
 													$author$project$Main$click,
-													$author$project$Grid$always($elm$core$Maybe$Nothing),
+													$elm$core$Basics$always($elm$core$Maybe$Nothing),
 													coord,
 													grid))));
 								} else {
@@ -7229,10 +7235,6 @@ var $author$project$Main$renderGrid = F2(
 							grid)))
 				]));
 	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
 var $author$project$Main$render = function (_v0) {
 	var index = _v0.z;
 	var mouse = _v0.K;
