@@ -5386,6 +5386,11 @@ var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
 var $elm$core$List$drop = F2(
 	function (n, list) {
 		drop:
@@ -5571,12 +5576,12 @@ var $elm$core$List$repeat = F2(
 	function (n, value) {
 		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
 	});
-var $author$project$Grid$repeat = F3(
-	function (m, n, x) {
+var $author$project$Grid$repeat = F2(
+	function (m, n) {
 		return A2(
-			$elm_community$list_extra$List$Extra$groupsOf,
-			n,
-			A2($elm$core$List$repeat, m * n, x));
+			$elm$core$Basics$composeR,
+			$elm$core$List$repeat(m * n),
+			$elm_community$list_extra$List$Extra$groupsOf(n));
 	});
 var $author$project$Main$initModel = function (board) {
 	var initial = A2(
@@ -5730,43 +5735,6 @@ var $author$project$Main$click = function (_v0) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Main$decrement = function (square) {
-	_v0$2:
-	while (true) {
-		switch (square.$) {
-			case 0:
-				if (!square.a.$) {
-					var value = square.a.a;
-					return $author$project$Main$Hidden(
-						$author$project$Main$Safe(value - 1));
-				} else {
-					break _v0$2;
-				}
-			case 1:
-				if (!square.a.$) {
-					var value = square.a.a;
-					return $author$project$Main$Marked(
-						$author$project$Main$Safe(value - 1));
-				} else {
-					break _v0$2;
-				}
-			default:
-				break _v0$2;
-		}
-	}
-	return square;
-};
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -5784,11 +5752,6 @@ var $elm$core$List$filterMap = F2(
 			$elm$core$List$maybeCons(f),
 			_List_Nil,
 			xs);
-	});
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
 	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
@@ -5870,6 +5833,62 @@ var $author$project$Grid$indexedMap = F4(
 				$author$project$Grid$withCoord(
 					A4($author$project$Grid$indexedMapRelationship, f1, f2, f3, c1)),
 				$elm$core$List$indexedMap));
+	});
+var $author$project$Main$clickNeighbors = function (coord) {
+	return A2(
+		$elm$core$Basics$composeR,
+		A4(
+			$author$project$Grid$indexedMap,
+			$elm$core$Basics$always($elm$core$Maybe$Nothing),
+			$author$project$Main$click,
+			$elm$core$Basics$always($elm$core$Maybe$Nothing),
+			coord),
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$List$concat,
+			$elm$core$List$filterMap($elm$core$Basics$identity)));
+};
+var $author$project$Main$mapValue = F2(
+	function (f, square) {
+		_v0$2:
+		while (true) {
+			switch (square.$) {
+				case 0:
+					if (!square.a.$) {
+						var value = square.a.a;
+						return $author$project$Main$Hidden(
+							$author$project$Main$Safe(
+								f(value)));
+					} else {
+						break _v0$2;
+					}
+				case 1:
+					if (!square.a.$) {
+						var value = square.a.a;
+						return $author$project$Main$Marked(
+							$author$project$Main$Safe(
+								f(value)));
+					} else {
+						break _v0$2;
+					}
+				default:
+					break _v0$2;
+			}
+		}
+		return square;
+	});
+var $author$project$Main$decrement = $author$project$Main$mapValue(
+	$elm$core$Basics$add(-1));
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
 	});
 var $author$project$Main$isMine = function (square) {
 	_v0$2:
@@ -6047,17 +6066,7 @@ var $author$project$Main$apply = F2(
 														$author$project$Main$Safe(0)),
 													coord,
 													grid)),
-											A2(
-												$elm$core$List$filterMap,
-												$elm$core$Basics$identity,
-												$elm$core$List$concat(
-													A5(
-														$author$project$Grid$indexedMap,
-														$elm$core$Basics$always($elm$core$Maybe$Nothing),
-														$author$project$Main$click,
-														$elm$core$Basics$always($elm$core$Maybe$Nothing),
-														coord,
-														grid))));
+											A2($author$project$Main$clickNeighbors, coord, grid));
 									} else {
 										var grid = _v0.a.a;
 										var _v11 = _v0.b;
@@ -6136,17 +6145,7 @@ var $author$project$Main$apply = F2(
 										$elm$core$List$foldl,
 										$author$project$Main$apply,
 										$author$project$Main$Pending(grid),
-										A2(
-											$elm$core$List$filterMap,
-											$elm$core$Basics$identity,
-											$elm$core$List$concat(
-												A5(
-													$author$project$Grid$indexedMap,
-													$elm$core$Basics$always($elm$core$Maybe$Nothing),
-													$author$project$Main$click,
-													$elm$core$Basics$always($elm$core$Maybe$Nothing),
-													coord,
-													grid))));
+										A2($author$project$Main$clickNeighbors, coord, grid));
 								} else {
 									return $author$project$Main$Pending(grid);
 								}
@@ -6160,32 +6159,8 @@ var $author$project$Main$apply = F2(
 		}
 		return state;
 	});
-var $author$project$Main$increment = function (square) {
-	_v0$2:
-	while (true) {
-		switch (square.$) {
-			case 0:
-				if (!square.a.$) {
-					var value = square.a.a;
-					return $author$project$Main$Hidden(
-						$author$project$Main$Safe(value + 1));
-				} else {
-					break _v0$2;
-				}
-			case 1:
-				if (!square.a.$) {
-					var value = square.a.a;
-					return $author$project$Main$Marked(
-						$author$project$Main$Safe(value + 1));
-				} else {
-					break _v0$2;
-				}
-			default:
-				break _v0$2;
-		}
-	}
-	return square;
-};
+var $author$project$Main$increment = $author$project$Main$mapValue(
+	$elm$core$Basics$add(1));
 var $author$project$Grid$indexToCoord = F2(
 	function (m, i) {
 		return _Utils_Tuple2(i % m, (i / m) | 0);
