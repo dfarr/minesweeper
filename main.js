@@ -6451,20 +6451,16 @@ var $author$project$Main$update = F2(
 						$elm$core$Platform$Cmd$none);
 				case 5:
 					var value = _v2.a.a;
-					var index_ = A2(
-						$elm$core$Maybe$withDefault,
-						index,
-						$elm$core$String$toInt(value));
 					var current = A3(
 						$elm$core$List$foldl,
 						$author$project$Main$apply,
 						state.L,
-						A2($elm$core$List$take, index_, events));
+						A2($elm$core$List$take, value, events));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								z: index_,
+								z: value,
 								w: _Utils_update(
 									state,
 									{l: current})
@@ -6687,7 +6683,14 @@ var $author$project$Main$renderSlider = F2(
 					A2($elm$html$Html$Attributes$style, 'border-radius', '20px'),
 					A2($elm$html$Html$Attributes$style, 'width', '100%'),
 					A2($elm$html$Html$Attributes$style, 'height', '20px'),
-					$elm$html$Html$Events$onInput($author$project$Main$Replay)
+					$elm$html$Html$Events$onInput(
+					A2(
+						$elm$core$Basics$composeL,
+						A2(
+							$elm$core$Basics$composeL,
+							$author$project$Main$Replay,
+							$elm$core$Maybe$withDefault(value_)),
+						$elm$core$String$toInt))
 				]),
 			_List_Nil);
 	});
