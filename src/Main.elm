@@ -98,7 +98,7 @@ type Msg
   | Setup Int
   | Mouse Bool
   | Click Event
-  | Replay String
+  | Replay Int
   | SetBoard (Board String)
 
 type Event
@@ -170,16 +170,12 @@ update message model =
 
     ( Replay value, _ ) ->
       let
-        index_ =
-          value
-            |> String.toInt
-            |> Maybe.withDefault index
         current =
           events
-            |> List.take index_
+            |> List.take value
             |> List.foldl apply state.initial
       in
-      ( { model | index = index_, state = { state | current = current } }, Cmd.none )
+      ( { model | index = value, state = { state | current = current } }, Cmd.none )
 
     ( SetBoard board_, _ ) ->
       ( { model | board = ( intBoard, board_ ) }, Cmd.none )
@@ -515,7 +511,7 @@ renderSlider value_ max =
     , style "border-radius" "20px"
     , style "width" "100%"
     , style "height" "20px"
-    , onInput Replay
+    , onInput (Replay << Maybe.withDefault value_ << String.toInt)
     ] []
 
 renderInputRight : Board String -> Html Msg
