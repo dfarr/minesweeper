@@ -1,0 +1,21 @@
+name: GitHub Pages
+on:
+  push:
+    branches:
+    - master
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install
+      uses: jorelali/setup-elm@v2
+      with:
+        elm-version: 0.19.1
+    - name: Build
+      run: elm make --optimize --output public/main.js src/Main.elm
+    - name: Publish
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

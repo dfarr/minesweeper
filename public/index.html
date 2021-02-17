@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Minesweeper</title>
+
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      color: rgb(20, 20, 20);
+    }
+    input[type=range] {
+      outline: none;
+      padding: 0 2px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      background: #4c8bf5;
+      width: 18px;
+      height: 18px;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      background: #4c8bf5;
+      width: 18px;
+      height: 18px;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+    }
+  </style>
+
+  <script src="main.js"></script>
+</head>
+<body>
+  <script>var app = Elm.Main.init();</script>
+</body>
+</html>
