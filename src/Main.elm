@@ -572,6 +572,7 @@ tableStyle =
   , attribute "cellpadding" "0"
   , attribute "cellspacing" "0"
   , attribute "border" "1"
+  , onRightClick NoOp
   ]
 
 trStyle : List (Html.Attribute Msg)
