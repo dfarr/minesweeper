@@ -7172,7 +7172,8 @@ var $author$project$Main$tableStyle = _List_fromArray(
 		A2($elm$html$Html$Attributes$style, 'margin', '0 auto 120px auto'),
 		A2($elm$html$Html$Attributes$attribute, 'cellpadding', '0'),
 		A2($elm$html$Html$Attributes$attribute, 'cellspacing', '0'),
-		A2($elm$html$Html$Attributes$attribute, 'border', '1')
+		A2($elm$html$Html$Attributes$attribute, 'border', '1'),
+		$author$project$Main$onRightClick($author$project$Main$NoOp)
 	]);
 var $author$project$Main$trStyle = _List_fromArray(
 	[
