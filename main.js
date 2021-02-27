@@ -5221,10 +5221,15 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$document = _Browser_document;
-var $author$project$Main$initBoard = {j: 16, e: 40, g: 16};
+var $author$project$Main$initBoard = {i: 16, e: 40, k: 16};
 var $author$project$Main$Setup = function (a) {
 	return {$: 2, a: a};
 };
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
 var $elm$random$Random$Generate = $elm$core$Basics$identity;
 var $elm$random$Random$Seed = F2(
 	function (a, b) {
@@ -5323,6 +5328,10 @@ var $elm$random$Random$generate = F2(
 		return $elm$random$Random$command(
 			A2($elm$random$Random$map, tagger, generator));
 	});
+var $author$project$Grid$indexToCoord = F2(
+	function (m, i) {
+		return _Utils_Tuple2(i % m, (i / m) | 0);
+	});
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
@@ -5365,11 +5374,14 @@ var $elm$random$Random$int = F2(
 		};
 	});
 var $author$project$Main$initCommand = function (_v0) {
-	var rows = _v0.g;
-	var cols = _v0.j;
+	var rows = _v0.k;
+	var cols = _v0.i;
 	return A2(
 		$elm$random$Random$generate,
-		$author$project$Main$Setup,
+		A2(
+			$elm$core$Basics$composeL,
+			$author$project$Main$Setup,
+			$author$project$Grid$indexToCoord(rows)),
 		A2($elm$random$Random$int, 0, (rows * cols) - 1));
 };
 var $author$project$Main$Hidden = function (a) {
@@ -5589,14 +5601,14 @@ var $author$project$Main$initModel = function (board) {
 		_Utils_Tuple2(0, 0),
 		A3(
 			$author$project$Grid$repeat,
-			board.g,
-			board.j,
+			board.k,
+			board.i,
 			$author$project$Main$Hidden(
 				$author$project$Main$Safe(0))));
 	var board_ = {
-		j: $elm$core$String$fromInt(board.j),
+		i: $elm$core$String$fromInt(board.i),
 		e: $elm$core$String$fromInt(board.e),
-		g: $elm$core$String$fromInt(board.g)
+		k: $elm$core$String$fromInt(board.k)
 	};
 	return {
 		D: _Utils_Tuple2(board, board_),
@@ -5661,11 +5673,6 @@ var $elm$core$List$any = F2(
 				}
 			}
 		}
-	});
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
 	});
 var $elm$core$Basics$not = _Basics_not;
 var $elm$core$List$all = F2(
@@ -6161,10 +6168,6 @@ var $author$project$Main$apply = F2(
 	});
 var $author$project$Main$increment = $author$project$Main$mapValue(
 	$elm$core$Basics$add(1));
-var $author$project$Grid$indexToCoord = F2(
-	function (m, i) {
-		return _Utils_Tuple2(i % m, (i / m) | 0);
-	});
 var $elm$core$Dict$Black = 1;
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -6347,15 +6350,15 @@ var $author$project$Main$update = F2(
 						1,
 						A2(
 							$elm$core$Maybe$withDefault,
-							intBoard.g,
-							$elm$core$String$toInt(strBoard.g)));
+							intBoard.k,
+							$elm$core$String$toInt(strBoard.k)));
 					var cols = A2(
 						$elm$core$Basics$max,
 						1,
 						A2(
 							$elm$core$Maybe$withDefault,
-							intBoard.j,
-							$elm$core$String$toInt(strBoard.j)));
+							intBoard.i,
+							$elm$core$String$toInt(strBoard.i)));
 					var mines_ = A2(
 						$elm$core$Basics$min,
 						(rows * cols) - 1,
@@ -6366,16 +6369,16 @@ var $author$project$Main$update = F2(
 								$elm$core$Maybe$withDefault,
 								intBoard.e,
 								$elm$core$String$toInt(strBoard.e))));
-					var board_ = {j: cols, e: mines_, g: rows};
+					var board_ = {i: cols, e: mines_, k: rows};
 					return _Utils_Tuple2(
 						$author$project$Main$initModel(board_),
 						$author$project$Main$initCommand(board_));
 				case 2:
 					if (!_v2.b.$) {
-						var value = _v2.a.a;
+						var coord = _v2.a.a;
 						var _v4 = _v2.b;
 						var grid = _v4.b;
-						var mines_ = A2($elm$core$Set$insert, value, mines);
+						var mines_ = A2($elm$core$Set$insert, coord, mines);
 						var _v5 = function () {
 							var _v6 = _Utils_eq(
 								$elm$core$Set$size(mines_),
@@ -6384,15 +6387,12 @@ var $author$project$Main$update = F2(
 								return _Utils_Tuple2(
 									A2(
 										$author$project$Main$Initial,
-										A2($author$project$Grid$indexToCoord, intBoard.g, value),
+										coord,
 										A3(
 											$elm$core$List$foldl,
 											A3($author$project$Grid$map, $author$project$Main$toMine, $author$project$Main$increment, $elm$core$Basics$identity),
 											grid,
-											A2(
-												$elm$core$List$map,
-												$author$project$Grid$indexToCoord(intBoard.g),
-												$elm$core$Set$toList(mines_)))),
+											$elm$core$Set$toList(mines_))),
 									$elm$core$Platform$Cmd$none);
 							} else {
 								return _Utils_Tuple2(
@@ -6571,13 +6571,13 @@ var $author$project$Main$renderInputLeft = function (board) {
 						A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(20, 20, 20)'),
 						A2($elm$html$Html$Attributes$style, 'border-radius', '0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(board.j),
+						$elm$html$Html$Attributes$value(board.i),
 						$elm$html$Html$Events$onInput(
 						function (cols) {
 							return $author$project$Main$SetBoard(
 								_Utils_update(
 									board,
-									{j: cols}));
+									{i: cols}));
 						}),
 						$elm$html$Html$Events$onBlur($author$project$Main$Reset)
 					]),
@@ -6605,13 +6605,13 @@ var $author$project$Main$renderInputLeft = function (board) {
 						A2($elm$html$Html$Attributes$style, 'border-color', 'rgb(20, 20, 20)'),
 						A2($elm$html$Html$Attributes$style, 'border-radius', '0px'),
 						A2($elm$html$Html$Attributes$style, 'width', '36px'),
-						$elm$html$Html$Attributes$value(board.g),
+						$elm$html$Html$Attributes$value(board.k),
 						$elm$html$Html$Events$onInput(
 						function (rows) {
 							return $author$project$Main$SetBoard(
 								_Utils_update(
 									board,
-									{g: rows}));
+									{k: rows}));
 						}),
 						$elm$html$Html$Events$onBlur($author$project$Main$Reset)
 					]),
