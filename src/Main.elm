@@ -28,7 +28,7 @@ subscriptions model =
 type alias Model =
   { index : Int
   , mouse : Bool
-  , mines : Set Int
+  , mines : Set Coord
   , board : ( Board Int, Board String )
   , state : { initial : State, current : State }
   , events : List Event
@@ -83,7 +83,7 @@ initModel board =
 initCommand : Board Int -> Cmd Msg
 initCommand { rows, cols } =
   Random.int 0 (rows * cols - 1)
-    |> Random.generate Setup
+    |> Random.generate (Setup << Grid.indexToCoord rows)
 
 init : () -> ( Model, Cmd Msg )
 init _ =
@@ -95,7 +95,7 @@ init _ =
 type Msg
   = NoOp
   | Reset
-  | Setup Int
+  | Setup Coord
   | Mouse Bool
   | Click Event
   | Replay Int
@@ -136,18 +136,17 @@ update message model =
       in
       ( initModel board_, initCommand board_ )
 
-    ( Setup value, Initial _ grid ) ->
+    ( Setup coord, Initial _ grid ) ->
       let
         mines_ =
-          Set.insert value mines
+          Set.insert coord mines
         ( current, command ) =
           case Set.size mines_ == intBoard.mines + 1 of
             True ->
               ( mines_
                 |> Set.toList
-                |> List.map (Grid.indexToCoord intBoard.rows)
                 |> List.foldl (Grid.map toMine increment identity) grid
-                |> Initial (value |> Grid.indexToCoord intBoard.rows)
+                |> Initial coord
               , Cmd.none )
             False ->
               ( state.current, initCommand intBoard )
