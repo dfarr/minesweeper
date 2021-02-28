@@ -7,6 +7,7 @@ import Html.Events exposing (custom, onBlur, onClick, onInput, onMouseDown, onMo
 import Json.Decode as Decode exposing (Decoder)
 import Random
 import Set exposing (Set)
+import Time
 
 import Grid exposing (Grid, Coord)
 
@@ -20,13 +21,14 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  Time.every 1000 Tick
 
 
 -- MODEL
 
 type alias Model =
   { index : Int
+  , clock : Int
   , mouse : Bool
   , mines : Set Coord
   , board : ( Board Int, Board String )
@@ -73,6 +75,7 @@ initModel board =
       }
   in
   { index = 0
+  , clock = 0
   , mouse = False
   , mines = Set.empty
   , board = ( board, board_ )
@@ -94,6 +97,7 @@ init _ =
 
 type Msg
   = NoOp
+  | Tick Time.Posix
   | Reset
   | Setup Coord
   | Mouse Bool
@@ -109,10 +113,18 @@ type Event
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
   let
-    { index, mines, board, state, events } = model
+    { index, clock, mines, board, state, events } = model
     ( intBoard, strBoard ) = board
   in
   case ( message, state.current ) of
+    ( Tick _, Pending _ ) ->
+      let
+        clock_ =
+          case index == List.length events of
+            True -> clock + 1
+            False -> clock
+      in
+        ( { model | clock = clock_ }, Cmd.none )
     ( Reset, _ ) ->
       let
         rows =
@@ -357,7 +369,7 @@ view model =
   }
 
 render : Model -> Html Msg
-render { index, mouse, board, state, events } =
+render { index, clock, mouse, board, state, events } =
   let
     grid_ =
       case state.current of
@@ -376,7 +388,7 @@ render { index, mouse, board, state, events } =
   in
   div []
     [ renderGrid grid_ emoji
-    , renderFoot (board |> Tuple.second) grid_ index (List.length events)
+    , renderFoot (board |> Tuple.second) clock grid_ index (events |> List.length)
     ]
 
 renderGrid : Grid Square -> String -> Html Msg
@@ -440,8 +452,8 @@ renderButton color text_ attributes =
     attributes
     [ strong [ style "color" color ] [ text text_ ] ]
 
-renderFoot : Board String -> Grid Square -> Int -> Int -> Html Msg
-renderFoot board grid value max =
+renderFoot : Board String -> Int -> Grid Square -> Int -> Int -> Html Msg
+renderFoot board clock grid index events =
   div
     [ style "bottom" "0"
     , style "position" "fixed"
@@ -454,7 +466,7 @@ renderFoot board grid value max =
     [ table [ style "width" "100%", style "padding" "10px 15px" ]
       [ tr []
         [ td [ style "width" "20%" ] [ renderInputLeft board ]
-        , td [ style "width" "60%" ] [ renderSlider value max ]
+        , td [ style "width" "60%" ] [ renderSlider index events ]
         , td [ style "width" "20%" ] [ renderInputRight board ]
         ]
       ]
@@ -465,7 +477,7 @@ renderFoot board grid value max =
       , style "background" "rgb(219, 219, 219)"
       ]
       [ tr []
-        [ td [ style "text-align" "left" ] [ renderStatsLeft (grid |> List.concat) value max ]
+        [ td [ style "text-align" "left" ] [ renderStatsLeft (grid |> List.concat) clock index events ]
         , td [ style "text-align" "right" ] [ renderStatsRight ]
         ]
       ]
@@ -506,19 +518,19 @@ renderInputLeft board =
     ]
 
 renderSlider : Int -> Int -> Html Msg
-renderSlider value_ max =
+renderSlider index events =
   input
     [ type_ "range"
     , Html.Attributes.min "0"
-    , Html.Attributes.max (max |> String.fromInt)
-    , value (value_ |> String.fromInt)
+    , Html.Attributes.max (events |> String.fromInt)
+    , value (index |> String.fromInt)
     , style "-webkit-appearance" "none"
     , style "background" "rgb(219, 219, 219)"
     , style "border" "2px solid rgb(169, 169, 169)"
     , style "border-radius" "20px"
     , style "width" "100%"
     , style "height" "20px"
-    , onInput (Replay << Maybe.withDefault value_ << String.toInt)
+    , onInput (Replay << Maybe.withDefault index << String.toInt)
     ] []
 
 renderInputRight : Board String -> Html Msg
@@ -541,8 +553,8 @@ renderInputRight board =
     , span [ style "font-size" "18px" ] [ text " 💣 " ]
     ]
 
-renderStatsLeft : List Square -> Int -> Int -> Html Msg
-renderStatsLeft squares index events =
+renderStatsLeft : List Square -> Int -> Int -> Int -> Html Msg
+renderStatsLeft squares clock index events =
   let
     hidden_ =
       squares
@@ -564,7 +576,8 @@ renderStatsLeft squares index events =
     ("event = " ++ (String.fromInt index) ++ " of " ++ (String.fromInt events)
       ++ " | hidden = " ++ hidden_
       ++ " | exposed = " ++ exposed_
-      ++ " | flagged = " ++ flagged_)
+      ++ " | flagged = " ++ flagged_
+      ++ " | time = " ++ (String.fromInt clock) ++ "s")
 
 renderStatsRight : Html Msg
 renderStatsRight =
