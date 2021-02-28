@@ -258,6 +258,7 @@ apply event state =
         True ->
           grid
             |> clickNeighbors coord
+            |> List.sortWith minesFirst
             |> List.foldl apply (Pending grid)
         False ->
           grid |> Pending
@@ -338,6 +339,13 @@ toMine square =
   case square of
     Marked _ -> Marked Mine
     _ -> Hidden Mine
+
+minesFirst : Event -> Event -> Order
+minesFirst e1 e2 =
+  case ( e1, e2 ) of
+    ( Clicked _ (Hidden Mine), _ ) -> LT
+    ( _, Clicked _ (Hidden Mine) ) -> GT
+    _ -> EQ
 
 
 -- VIEW
