@@ -5955,6 +5955,24 @@ var $author$project$Main$marked = function (square) {
 		return false;
 	}
 };
+var $author$project$Main$minesFirst = F2(
+	function (e1, e2) {
+		var _v0 = _Utils_Tuple2(e1, e2);
+		if (((!_v0.a.$) && (!_v0.a.b.$)) && (_v0.a.b.a.$ === 1)) {
+			var _v1 = _v0.a;
+			var _v2 = _v1.b.a;
+			return 0;
+		} else {
+			if (((!_v0.b.$) && (!_v0.b.b.$)) && (_v0.b.b.a.$ === 1)) {
+				var _v3 = _v0.b;
+				var _v4 = _v3.b.a;
+				return 2;
+			} else {
+				return 1;
+			}
+		}
+	});
+var $elm$core$List$sortWith = _List_sortWith;
 var $author$project$Main$apply = F2(
 	function (event, state) {
 		var _v0 = _Utils_Tuple2(state, event);
@@ -6152,7 +6170,10 @@ var $author$project$Main$apply = F2(
 										$elm$core$List$foldl,
 										$author$project$Main$apply,
 										$author$project$Main$Pending(grid),
-										A2($author$project$Main$clickNeighbors, coord, grid));
+										A2(
+											$elm$core$List$sortWith,
+											$author$project$Main$minesFirst,
+											A2($author$project$Main$clickNeighbors, coord, grid)));
 								} else {
 									return $author$project$Main$Pending(grid);
 								}
